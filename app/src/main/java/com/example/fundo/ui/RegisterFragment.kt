@@ -8,16 +8,17 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.example.fundo.R
 import com.google.firebase.auth.FirebaseAuth
+import model.UserDetails
 import service.AuthenticationService
 
 class RegisterFragment: Fragment(R.layout.registerfragment) {
 
-    lateinit var loginText:TextView
-    lateinit var userName:EditText
-    lateinit var email:EditText
-    lateinit var password:EditText
-    lateinit var confirmPassword:EditText
-    lateinit var register:Button
+    lateinit var loginText: TextView
+    lateinit var userName: EditText
+    lateinit var email: EditText
+    lateinit var password: EditText
+    lateinit var confirmPassword: EditText
+    lateinit var register: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,31 +38,41 @@ class RegisterFragment: Fragment(R.layout.registerfragment) {
         register = view.findViewById(R.id.buttonRegister)
         register.setOnClickListener {
 
-            if( Validation.checkCredentialsForRegister(userName, email, password, confirmPassword)) {
+            if (Validation.checkCredentialsForRegister(
+                    userName,
+                    email,
+                    password,
+                    confirmPassword
+                )
+            ) {
                 var emailId = email.editableText.toString()
                 var pass = password.editableText.toString()
 
-                AuthenticationService().register(emailId,pass) { status, message ->
+                AuthenticationService().register(emailId, pass) { status, message ->
 
-                    Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
+                    if (status) {
+                        var newUser = UserDetails(userName.text.toString(),email.text.toString(),true)
+                        var bundle = Bundle()
+                        bundle = Validation.addInfoToBundle(newUser)
+                        var profileFragment = ProfileFragment()
+                        profileFragment.arguments = bundle
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        requireActivity().supportFragmentManager.beginTransaction().apply {
+                            replace(R.id.fragmentContainer, profileFragment)
+                            commit()
+                        }
+                    }
 
-//                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(emailId,pass).addOnCompleteListener {
-//                        if(it.isSuccessful) {
-//                            Toast.makeText(context, "registration is success", Toast.LENGTH_SHORT).show()
-//                        }
-//                        else {
-//                            Toast.makeText(context, it.exception?.message.toString(), Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-
+                    else {
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
                 }
-                }
+            }
+
         }
 
-
-
         loginText.setOnClickListener {
-            Toast.makeText(context,"Clicked",Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show()
 
             requireActivity().supportFragmentManager.beginTransaction().apply {
                 replace(R.id.fragmentContainer, LoginFragment())
@@ -74,6 +85,7 @@ class RegisterFragment: Fragment(R.layout.registerfragment) {
 
         return view
     }
+}
 
 
 //    private fun checkCredentials() {
@@ -107,4 +119,3 @@ class RegisterFragment: Fragment(R.layout.registerfragment) {
 //    }
 
 
-}

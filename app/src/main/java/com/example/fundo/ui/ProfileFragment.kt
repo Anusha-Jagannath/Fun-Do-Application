@@ -23,7 +23,7 @@ class ProfileFragment : Fragment(R.layout.profilefragment){
         val view = inflater.inflate(R.layout.profilefragment, container, false)
         profile = view.findViewById(R.id.profileText)
         val args = this.arguments
-        val profileData = args?.get("data")
+        val profileData = args?.get("name")
         profile.text = "Welcome $profileData"
         logout = view.findViewById(R.id.logoutButton)
         logout.setOnClickListener {
