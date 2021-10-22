@@ -28,4 +28,17 @@ class AuthenticationService {
                     }
 
     }
+
+    fun login(email:String,password:String,listener:(Boolean,String) -> Unit) {
+
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            listener(true,"login is successful")
+                        } else {
+                            listener(false,it.exception?.message.toString())
+                        }
+                    }
+
+    }
 }

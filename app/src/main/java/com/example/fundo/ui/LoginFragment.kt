@@ -8,6 +8,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.example.fundo.R
 import com.google.firebase.auth.FirebaseAuth
+import service.AuthenticationService
 
 class LoginFragment : Fragment(R.layout.loginfragment) {
 
@@ -31,6 +32,7 @@ class LoginFragment : Fragment(R.layout.loginfragment) {
         password = view.findViewById(R.id.inputPassword)
         login = view.findViewById(R.id.buttonLogin)
         login.setOnClickListener {
+
             if (Validation.checkCrendentialsForLogin(inputEmail, password)) {
                 var email = inputEmail.editableText.toString()
                 var password = password.editableText.toString()
@@ -39,22 +41,21 @@ class LoginFragment : Fragment(R.layout.loginfragment) {
                 bundle.putString("data",email)
                 profileFragment.arguments = bundle
 
-                FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            Toast.makeText(context, "login is success", Toast.LENGTH_SHORT).show()
-                            requireActivity().supportFragmentManager.beginTransaction().apply {
+                AuthenticationService().login(email,password) { status,message ->
+                    Toast.makeText(context,"$status",Toast.LENGTH_SHORT).show()
+                    if(status) {
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        requireActivity().supportFragmentManager.beginTransaction().apply {
                                 replace(R.id.fragmentContainer, profileFragment)
                                 commit()
                             }
-                        } else {
-                            Toast.makeText(
-                                context,
-                                it.exception?.message.toString(),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
                     }
+                    else {
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+
             }
         }
 
