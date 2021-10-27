@@ -65,7 +65,7 @@
         android:text="Forgot password?"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.855"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/inputPassword"
         app:layout_constraintTop_toBottomOf="@+id/inputPassword" />
 
@@ -105,25 +105,53 @@
         app:layout_constraintStart_toEndOf="@+id/noAccount"
         app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="128dp"
-        android:layout_marginTop="60dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView2"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/noAccount"
-        app:srcCompat="@drawable/google" />
+<!--    <ImageView-->
+<!--        android:id="@+id/imageView"-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginStart="128dp"-->
+<!--        android:layout_marginTop="60dp"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/facebookbtn"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/noAccount"-->
+<!--        app:srcCompat="@drawable/google" />-->
+
+<!--    <ImageView-->
+<!--        android:id="@+id/facebookbtn"-->
+<!--        android:layout_width="97dp"-->
+<!--        android:layout_height="77dp"-->
+<!--        android:layout_marginTop="40dp"-->
+<!--        android:layout_marginEnd="84dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/textViewSignUp"-->
+<!--        app:srcCompat="@drawable/facebook" />-->
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/facebookbtn"
         android:layout_width="97dp"
         android:layout_height="77dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="84dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="72dp"
+
+        android:layout_marginEnd="168dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewSignUp"
+        app:layout_constraintTop_toBottomOf="@+id/noAccount"
         app:srcCompat="@drawable/facebook" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLogin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.429"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/logo"
+        app:layout_constraintVertical_bias="0.907" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.fundo.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import model.UserDetails
 
@@ -73,8 +74,9 @@ object Validation {
     }
 
    fun addInfoToBundle(newUser: UserDetails): Bundle {
+       Log.d("Validation",newUser.email)
        var bundle = Bundle()
-       bundle.putString("name",newUser.userName)
+       bundle.putString("username",newUser.userName)
        bundle.putString("email",newUser.email)
        return bundle
    }
