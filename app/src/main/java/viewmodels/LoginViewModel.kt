@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import model.UserDetails
 import service.AuthenticationService
+import service.Database
 
 class LoginViewModel: ViewModel() {
 
@@ -30,4 +31,14 @@ class LoginViewModel: ViewModel() {
         return result
 
     }
-}
+
+
+    fun readData():String
+    {
+        var database = Database()
+        var fullName = database.getData()
+        return fullName
+    }
+
+
+    }

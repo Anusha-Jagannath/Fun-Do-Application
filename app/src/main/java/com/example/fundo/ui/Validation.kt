@@ -1,5 +1,6 @@
 package com.example.fundo.ui
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
@@ -80,5 +81,9 @@ object Validation {
        bundle.putString("email",newUser.email)
        return bundle
    }
+
+
+
+
 
     }

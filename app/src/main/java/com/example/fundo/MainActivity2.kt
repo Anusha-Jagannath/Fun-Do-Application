@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import com.example.fundo.ui.HomeActivity
 import com.example.fundo.ui.MainActivity
 import com.example.fundo.ui.ProfileFragment
 import com.facebook.AccessToken
@@ -107,10 +108,14 @@ class MainActivity2 : MainActivity() {
             val profileFragment = ProfileFragment()
             profileFragment.arguments = bundle
 
-            val fragmentManager = supportFragmentManager
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.fragmentContainer, profileFragment)
-            fragmentTransaction.commit()
+//            val fragmentManager = supportFragmentManager
+//            val fragmentTransaction = fragmentManager.beginTransaction()
+//            fragmentTransaction.replace(R.id.fragmentContainer, profileFragment)
+//            fragmentTransaction.commit()
+
+            var intent = Intent(this,HomeActivity::class.java)
+            startActivity(intent)
+
 
         }
 

@@ -2,6 +2,7 @@ package com.example.fundo.ui
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,8 @@ open class MainActivity : AppCompatActivity(){
     lateinit var binding: ActivityMainBinding
     private lateinit var sharedViewModel: SharedViewModel
 
+    lateinit var sharedPreference:SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -32,6 +35,8 @@ open class MainActivity : AppCompatActivity(){
         //replaceFragment(LoginFragment())
 
         //facebookButton = findViewById(R.id.facebookbtn)
+
+        sharedPreference = getSharedPreferences("USER_INFO",Context.MODE_PRIVATE)
 
         sharedViewModel = ViewModelProvider(this@MainActivity, SharedViewModelFactory())[SharedViewModel::class.java]
         observeAppNavigation()
@@ -74,6 +79,11 @@ open class MainActivity : AppCompatActivity(){
                 var profileFragment = ProfileFragment()
                 profileFragment.arguments = bundle
                 //gotoProfilePage(profileFragment)
+                val editor: SharedPreferences.Editor = sharedPreference.edit()
+                editor.putString("NAME",it.userName)
+                editor.putString("EMAIL",it.email)
+                editor.apply()
+                Log.d("MainActivity","saved in shared pref")
                 gotoHomeActivity()
             }
         })

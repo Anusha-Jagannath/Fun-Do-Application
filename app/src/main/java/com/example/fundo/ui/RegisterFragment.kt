@@ -12,6 +12,7 @@ import com.example.fundo.R
 import com.google.firebase.auth.FirebaseAuth
 import model.UserDetails
 import service.AuthenticationService
+import service.Database
 import viewmodels.*
 
 class RegisterFragment: Fragment(R.layout.registerfragment) {
@@ -64,6 +65,9 @@ class RegisterFragment: Fragment(R.layout.registerfragment) {
                 Toast.makeText(context,"Status : $status",Toast.LENGTH_SHORT).show()
                 if(!status){
                     var newUser = UserDetails(name,emailId,true)
+                    registerViewModel.addToDatabase(newUser)
+                    //var database = Database()
+                    //database.saveUserData(newUser)
                     registerViewModel.setRegisterStatus(newUser)
                     Toast.makeText(context, "regsiter success", Toast.LENGTH_SHORT).show()
                     sharedViewModel.setGotoHomePageStatus(newUser)

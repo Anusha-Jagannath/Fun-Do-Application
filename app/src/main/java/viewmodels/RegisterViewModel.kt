@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import model.UserDetails
 import service.AuthenticationService
+import service.Database
 
 class RegisterViewModel: ViewModel() {
 
@@ -28,5 +29,10 @@ class RegisterViewModel: ViewModel() {
                 result = false
         }
         return result
+    }
+
+    fun addToDatabase(user: UserDetails) {
+        var database = Database()
+        database.saveUserData(user)
     }
 }

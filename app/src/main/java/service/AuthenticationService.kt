@@ -48,4 +48,6 @@ class AuthenticationService {
         FirebaseAuth.getInstance().signOut()
     }
 
+    fun getUid() = FirebaseAuth.getInstance().currentUser!!.uid
+
 }

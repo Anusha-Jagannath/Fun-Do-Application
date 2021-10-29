@@ -1,6 +1,7 @@
 package com.example.fundo.ui
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import com.example.fundo.R
 import com.google.firebase.auth.FirebaseAuth
 import model.UserDetails
 import service.AuthenticationService
+import service.Database
 import viewmodels.LoginViewModel
 import viewmodels.LoginViewModelFactory
 import viewmodels.SharedViewModel
@@ -45,6 +47,7 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
         password = view.findViewById(R.id.inputPassword)
         login = view.findViewById(R.id.buttonLogin)
 
+
         loadingIcon = view.findViewById(R.id.progressBar)
 
         sharedViewModel = ViewModelProvider(requireActivity(), SharedViewModelFactory())[SharedViewModel::class.java]
@@ -63,10 +66,15 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
                 profileFragment.arguments = bundle
 
 
+
                 var status = loginViewModel.loginUser(email,password)
                 Toast.makeText(context,"Status : $status",Toast.LENGTH_SHORT).show()
 
                 if(!status){
+//                    var database = Database()
+//                    var fullName = database.getData()
+                    //var fullName = loginViewModel.readData()
+
                     var newUser = UserDetails("Anusha",email,true)
                     loginViewModel.setLoginStatus(newUser)
 
