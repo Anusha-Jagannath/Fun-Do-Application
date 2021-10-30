@@ -1,17 +1,13 @@
 package com.example.fundo.ui
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -22,7 +18,10 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
+import com.example.fundo.AddNoteFragment
 import com.example.fundo.R
+import com.example.fundo.databinding.ActivityMainBinding
+import com.example.fundo.home.AddNotesActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_home.*
@@ -30,9 +29,9 @@ import kotlinx.android.synthetic.main.content_main.*
 import service.AuthenticationService
 import service.Storage
 import viewmodels.*
-import java.net.URI
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
 
     lateinit var preferences: SharedPreferences
     lateinit var logoutBtn: Button
@@ -52,9 +51,12 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
         setSupportActionBar(toolbar)
 
         val toggle = ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close)
@@ -91,6 +93,16 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         addNoteButton.setOnClickListener {
             Toast.makeText(this,"add not fab clicked",Toast.LENGTH_SHORT).show()
+
+
+            var intent = Intent(this,AddNotesActivity::class.java)
+            startActivity(intent)
+
+//            val fragmentManager = supportFragmentManager
+//            val fragmentTransaction = fragmentManager.beginTransaction()
+//            fragmentTransaction.replace(R.id.fragmentContainerHome, AddNoteFragment())
+//            fragmentTransaction.commit()
+
         }
 
 
@@ -103,10 +115,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         displayIcon()
-
-
-
-
 
 
     }
@@ -254,8 +262,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         }
     }
-
-
 
 }
 
