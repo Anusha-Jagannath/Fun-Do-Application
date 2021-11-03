@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FunDo">
         <activity
+            android:name=".home.GridActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.HomeActivityNew"
+            android:exported="true" />
+        <activity
+            android:name=".home.LinearGridActivity"
+            android:exported="true" />
+        <activity
             android:name=".home.AddNotesActivity"
             android:exported="true" />
         <activity

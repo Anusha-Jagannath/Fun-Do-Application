@@ -18,23 +18,33 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.fundo.AddNoteFragment
 import com.example.fundo.R
-import com.example.fundo.databinding.ActivityMainBinding
+import com.example.fundo.home.Adapter
 import com.example.fundo.home.AddNotesActivity
+import com.example.fundo.home.Notes
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_main.*
 import service.AuthenticationService
+import service.Database
 import service.Storage
 import viewmodels.*
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
 
+
+    private lateinit var noteRecyclerView: RecyclerView
+    private lateinit var noteArrayList: ArrayList<Notes>
+
+
     lateinit var preferences: SharedPreferences
-    lateinit var logoutBtn: Button
+    //lateinit var logoutBtn: Button
 
 
 
@@ -48,6 +58,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private var menu: Menu? = null
     lateinit var addNoteButton: FloatingActionButton
+
+    //grid image
+    lateinit var gridImageView: ImageView
 
 
 
@@ -69,7 +82,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         addNoteButton = findViewById(R.id.createNoteBtn) //add note button
-        logoutBtn = findViewById(R.id.logout)
+        //logoutBtn = findViewById(R.id.logout)
 
         homeViewModel = ViewModelProvider(this, HomeViewModelFactory())[HomeViewModel::class.java]
 
@@ -81,15 +94,16 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val email = preferences.getString("EMAIL","")
         Toast.makeText(applicationContext,"$name $email",Toast.LENGTH_SHORT).show()
 
-        logoutBtn.setOnClickListener {
-            AuthenticationService().logOut()
-            Toast.makeText(applicationContext,"logout success",Toast.LENGTH_SHORT).show()
-//            val fragmentManager = supportFragmentManager
-//            val fragmentTransaction = fragmentManager.beginTransaction()
-//            fragmentTransaction.replace(R.id.fragmentContainer,LoginFragment())
-//            fragmentTransaction.commit()
 
-        }
+
+        noteRecyclerView = findViewById(R.id.noteList)
+        noteRecyclerView.layoutManager = LinearLayoutManager(this)
+        noteRecyclerView.setHasFixedSize(true)
+        noteArrayList = arrayListOf<Notes>()
+        getNotesData()
+
+
+
 
         addNoteButton.setOnClickListener {
             Toast.makeText(this,"add not fab clicked",Toast.LENGTH_SHORT).show()
@@ -98,10 +112,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             var intent = Intent(this,AddNotesActivity::class.java)
             startActivity(intent)
 
-//            val fragmentManager = supportFragmentManager
-//            val fragmentTransaction = fragmentManager.beginTransaction()
-//            fragmentTransaction.replace(R.id.fragmentContainerHome, AddNoteFragment())
-//            fragmentTransaction.commit()
 
         }
 
@@ -119,7 +129,31 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
+    private fun getNotesData() {
 
+        lateinit var dbref: DatabaseReference
+        dbref = FirebaseDatabase.getInstance().getReference("Notes")
+        dbref.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                if(snapshot.exists()) {
+                    for(noteSnapshot in snapshot.children) {
+                        val notes = noteSnapshot.getValue(Notes::class.java)
+                        noteArrayList.add(notes!!)
+                    }
+
+                    noteRecyclerView.adapter = Adapter(noteArrayList)
+
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

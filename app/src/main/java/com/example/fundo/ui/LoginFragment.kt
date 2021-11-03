@@ -86,18 +86,6 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
                 }
 
 
-//                AuthenticationService().login(email,password) { status,message ->
-//                    Toast.makeText(context,"$status",Toast.LENGTH_SHORT).show()
-//                    if(status) {
-//                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-//
-//                        var newUser = UserDetails("Anusha",email,true)
-//                        sharedViewModel.setGotoHomePageStatus(newUser)
-//                    }
-//                    else {
-//                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-//                    }
-//                }
 
 
             }

@@ -67,7 +67,7 @@ open class MainActivity : AppCompatActivity(){
     }
 
     private fun gotoHomeActivity() {
-        var intent = Intent(this@MainActivity,HomeActivity::class.java)
+        var intent = Intent(this@MainActivity,HomeActivityNew::class.java)
         startActivity(intent)
     }
 
