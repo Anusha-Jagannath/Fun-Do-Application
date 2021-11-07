@@ -34,7 +34,6 @@ class GridActivity : AppCompatActivity() {
 
 
         noteRecyclerView = findViewById(R.id.noteList)
-        //noteRecyclerView.layoutManager = LinearLayoutManager(this)
         noteRecyclerView.layoutManager = GridLayoutManager(this, 2)
         noteRecyclerView.setHasFixedSize(true)
         noteArrayList = arrayListOf<Notes>()
@@ -56,7 +55,15 @@ class GridActivity : AppCompatActivity() {
                         noteArrayList.add(notes!!)
                     }
 
-                    noteRecyclerView.adapter = Adapter(noteArrayList)
+
+                    var adapter = Adapter(noteArrayList)
+                    noteRecyclerView.adapter = adapter
+                    adapter.setOnItemClickListener(object: Adapter.onItemClickListener{
+                        override fun onItemClick(position: Int) {
+                            Toast.makeText(applicationContext,"clicked on $position",Toast.LENGTH_SHORT).show()
+                        }
+
+                    })
 
                 }
 

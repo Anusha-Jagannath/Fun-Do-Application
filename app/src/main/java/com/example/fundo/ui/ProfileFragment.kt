@@ -17,10 +17,10 @@ import service.AuthenticationService
 import viewmodels.SharedViewModel
 import viewmodels.SharedViewModelFactory
 
-class ProfileFragment : Fragment(R.layout.profilefragment){
+class ProfileFragment : Fragment(R.layout.profilefragment) {
 
     lateinit var logout: Button
-    lateinit var profile:TextView
+    lateinit var profile: TextView
     private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreateView(
@@ -31,30 +31,31 @@ class ProfileFragment : Fragment(R.layout.profilefragment){
         val view = inflater.inflate(R.layout.profilefragment, container, false)
         profile = view.findViewById(R.id.profileText)
 
-        sharedViewModel = ViewModelProvider(requireActivity(), SharedViewModelFactory())[SharedViewModel::class.java]
+        sharedViewModel = ViewModelProvider(
+            requireActivity(),
+            SharedViewModelFactory()
+        )[SharedViewModel::class.java]
 
 
-
-          val args = this.arguments
+        val args = this.arguments
 //        val profileData = args?.get("name").toString()
 //        profile.text = "Welcome $profileData"
         val email = args?.get("email")
-       // var name = arguments?.get("name").toString()
-        Log.d("Profile fragment",email.toString())
+        // var name = arguments?.get("name").toString()
+        Log.d("Profile fragment", email.toString())
         profile.text = email.toString()
 
         logout = view.findViewById(R.id.logoutButton)
         logout.setOnClickListener {
-           // FirebaseAuth.getInstance().signOut()
+            // FirebaseAuth.getInstance().signOut()
 
             AuthenticationService().logOut()
-            Toast.makeText(context,"logout success",Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "logout success", Toast.LENGTH_SHORT).show()
             sharedViewModel.setGotoLoginPageStatus(true)
 
         }
         return view
     }
-
 
 
 }

@@ -15,7 +15,7 @@ import service.AuthenticationService
 import service.Database
 import viewmodels.*
 
-class RegisterFragment: Fragment(R.layout.registerfragment) {
+class RegisterFragment : Fragment(R.layout.registerfragment) {
 
     lateinit var loginText: TextView
     lateinit var userName: EditText
@@ -23,7 +23,7 @@ class RegisterFragment: Fragment(R.layout.registerfragment) {
     lateinit var password: EditText
     lateinit var confirmPassword: EditText
     lateinit var register: Button
-    lateinit var loading:ProgressBar
+    lateinit var loading: ProgressBar
     private lateinit var sharedViewModel: SharedViewModel
     private lateinit var registerViewModel: RegisterViewModel
 
@@ -42,8 +42,12 @@ class RegisterFragment: Fragment(R.layout.registerfragment) {
 
         loading = view.findViewById(R.id.progressIcon)
 
-        sharedViewModel = ViewModelProvider(requireActivity(), SharedViewModelFactory())[SharedViewModel::class.java]
-        registerViewModel = ViewModelProvider(this, RegisterViewModelFactory())[RegisterViewModel::class.java]
+        sharedViewModel = ViewModelProvider(
+            requireActivity(),
+            SharedViewModelFactory()
+        )[SharedViewModel::class.java]
+        registerViewModel =
+            ViewModelProvider(this, RegisterViewModelFactory())[RegisterViewModel::class.java]
 
         register = view.findViewById(R.id.buttonRegister)
         registerObservers()
@@ -61,40 +65,21 @@ class RegisterFragment: Fragment(R.layout.registerfragment) {
                 var pass = password.editableText.toString()
                 var name = userName.editableText.toString()
 
-               var status = registerViewModel.registerUser(name,emailId,pass)
-                Toast.makeText(context,"Status : $status",Toast.LENGTH_SHORT).show()
-                if(!status){
-                    var newUser = UserDetails(name,emailId,true)
+                var status = registerViewModel.registerUser(name, emailId, pass)
+                Toast.makeText(context, "Status : $status", Toast.LENGTH_SHORT).show()
+                if (!status) {
+                    var newUser = UserDetails(name, emailId, true)
                     registerViewModel.addToDatabase(newUser)
                     //var database = Database()
                     //database.saveUserData(newUser)
                     registerViewModel.setRegisterStatus(newUser)
                     Toast.makeText(context, "regsiter success", Toast.LENGTH_SHORT).show()
                     sharedViewModel.setGotoHomePageStatus(newUser)
+                } else {
+                    Toast.makeText(context, "register unsucess", Toast.LENGTH_SHORT).show()
                 }
-                else {
-                    Toast.makeText(context,"register unsucess",Toast.LENGTH_SHORT).show()
-                }
 
 
-
-
-
-
-//                AuthenticationService().register(emailId, pass) { status, message ->
-//
-//                    if (status) {
-//                        var newUser = UserDetails(name,emailId,true)
-//                        Log.d("RegisterFragment",newUser.email)
-//                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-//                        sharedViewModel.setGotoHomePageStatus(newUser)
-//
-//                    }
-//
-//                    else {
-//                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-//                    }
-//                }
             }
 
         }
@@ -102,11 +87,6 @@ class RegisterFragment: Fragment(R.layout.registerfragment) {
         loginText.setOnClickListener {
             Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show()
             sharedViewModel.setGotoLoginPageStatus(true)
-
-//            requireActivity().supportFragmentManager.beginTransaction().apply {
-//                replace(R.id.fragmentContainer, LoginFragment())
-//                commit()
-//            }
 
 
         }
@@ -117,13 +97,12 @@ class RegisterFragment: Fragment(R.layout.registerfragment) {
 
 
     private fun registerObservers() {
-        registerViewModel.registerStatus.observe(viewLifecycleOwner){
-            if(it.loginStatus) {
-                Toast.makeText(requireContext(),"User registerd",Toast.LENGTH_SHORT).show()
+        registerViewModel.registerStatus.observe(viewLifecycleOwner) {
+            if (it.loginStatus) {
+                Toast.makeText(requireContext(), "User registerd", Toast.LENGTH_SHORT).show()
                 sharedViewModel.setGotoHomePageStatus(it)
-            }
-            else {
-                Toast.makeText(requireContext(),"register failed",Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "register failed", Toast.LENGTH_SHORT).show()
             }
         }
     }

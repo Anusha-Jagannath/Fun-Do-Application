@@ -1,5 +1,6 @@
 package com.example.fundo.home
 
+import android.content.ContentValues
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,13 +10,12 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import com.example.fundo.R
-import com.example.fundo.ui.HomeActivity
 import com.example.fundo.ui.HomeActivityNew
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import service.Database
+import service.DatabaseHelper
+import service.DatabaseService
 
 class AddNotesActivity : AppCompatActivity() {
 
@@ -24,6 +24,7 @@ class AddNotesActivity : AppCompatActivity() {
     lateinit var addtitle: EditText
     lateinit var addContent: EditText
     lateinit var updateNoteButton: Button
+    lateinit var deleteNoteButton: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,12 +36,16 @@ class AddNotesActivity : AppCompatActivity() {
         saveNotesButton = findViewById(R.id.saveNoteBtn)
         backButton = findViewById(R.id.backButton)
         updateNoteButton = findViewById(R.id.updateBtn)
+        deleteNoteButton = findViewById(R.id.deleteImage)
 
         var title = intent.getStringExtra("title")
         var content = intent.getStringExtra("content")
 
         addtitle.setText(title)
         addContent.setText(content)
+
+        var helper = DatabaseHelper(applicationContext)
+
 
 
         saveNotesButton.setOnClickListener {
@@ -53,6 +58,12 @@ class AddNotesActivity : AppCompatActivity() {
                 var notes = Notes(title, note)
                 database.saveNotes(notes)
                 Toast.makeText(applicationContext, "Note saved", Toast.LENGTH_SHORT).show()
+
+                var databaseService = DatabaseService()
+                databaseService.addDataToDB(title,note,helper)
+                Toast.makeText(this,"note saved to sqlite",Toast.LENGTH_SHORT).show()
+
+
             } else {
                 Toast.makeText(applicationContext, "Empty note discarded", Toast.LENGTH_SHORT)
                     .show()
@@ -73,8 +84,27 @@ class AddNotesActivity : AppCompatActivity() {
             var newContent = addContent.text.toString()
             var database = Database()
             database.updateNote(key, newTitle, newContent)
+            var databaseService = DatabaseService()
+            if (title != null) {
+                databaseService.updateDataToDB(title,newTitle,newContent,helper)
+            }
 
         }
+
+        deleteNoteButton.setOnClickListener {
+            var key = title + content
+            Toast.makeText(this,"delete button clicked",Toast.LENGTH_SHORT).show()
+            var database = Database()
+            database.deleteNote(key)
+
+            var databaseService = DatabaseService()
+            if (title != null) {
+                databaseService.deleteDataFromDB(title,helper)
+            }
+        }
+
+
+
     }
 
 

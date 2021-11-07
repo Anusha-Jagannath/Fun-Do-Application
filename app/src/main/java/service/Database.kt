@@ -98,4 +98,14 @@ class Database {
          return noteArrayList
     }
 
+    fun deleteNote(key: String) {
+        var uid = FirebaseAuth.getInstance().currentUser!!.uid
+        var database = FirebaseDatabase.getInstance().getReference("user").child(uid).child("Notes")
+        database.child(key).removeValue().addOnSuccessListener {
+            Log.d("test","deleted")
+        }.addOnFailureListener {
+            Log.d("test","not deleted")
+        }
+    }
+
 }

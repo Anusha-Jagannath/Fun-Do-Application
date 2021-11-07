@@ -95,10 +95,6 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
         signUpText.setOnClickListener {
             Toast.makeText(context, "sign clicked", Toast.LENGTH_SHORT).show()
             sharedViewModel.setGotoRegisterPageStatus(true)
-//            requireActivity().supportFragmentManager.beginTransaction().apply {
-//                replace(R.id.fragmentContainer, RegisterFragment())
-//                commit()
-//            }
         }
 
 
@@ -106,11 +102,6 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
 
             Toast.makeText(context, "forgot password clicked", Toast.LENGTH_SHORT).show()
             sharedViewModel.setGotoForgotPageStatus(true)
-//            requireActivity().supportFragmentManager.beginTransaction().apply {
-//                replace(R.id.fragmentContainer, ForgotPasswordFragment())
-//                commit()
-//
-//            }
 
         }
 

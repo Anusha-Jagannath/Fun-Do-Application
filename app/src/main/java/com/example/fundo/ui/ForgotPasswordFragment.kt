@@ -49,10 +49,6 @@ class ForgotPasswordFragment : Fragment() {
                     progress.visibility = View.GONE
                 }
 
-
-//                AuthenticationService().forgotPassword(emailId) { status, message ->
-//                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-//                }
             }
         }
         return view
