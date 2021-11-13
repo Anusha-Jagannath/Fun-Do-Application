@@ -10,7 +10,7 @@
         android:title="About" />
     <item
         android:id="@+id/contact"
-        android:title="Contact" />
+        android:title="Deleted Notes" />
     <item
         android:id="@+id/settings"
         android:title="Settings" />

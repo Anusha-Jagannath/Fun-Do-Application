@@ -1,7 +1,6 @@
 package com.example.fundo.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +8,12 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.fundo.R
-import com.google.firebase.auth.FirebaseAuth
+import com.example.fundo.userroomdata.User
+import com.example.fundo.userroomdata.UserDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import model.UserDetails
-import service.AuthenticationService
-import service.Database
 import viewmodels.*
 
 class RegisterFragment : Fragment(R.layout.registerfragment) {
@@ -57,7 +58,7 @@ class RegisterFragment : Fragment(R.layout.registerfragment) {
                     userName,
                     email,
                     password,
-                    confirmPassword
+                    confirmPassword,requireContext()
                 )
             ) {
                 loading.visibility = View.VISIBLE
@@ -78,6 +79,15 @@ class RegisterFragment : Fragment(R.layout.registerfragment) {
                 } else {
                     Toast.makeText(context, "register unsucess", Toast.LENGTH_SHORT).show()
                 }
+              // user dao code added
+              val userInfo = User(null,name,emailId)
+                GlobalScope.launch(Dispatchers.IO) {
+                    UserDatabase.getInstance(this@RegisterFragment).userDao().insert(userInfo)
+                }
+                Toast.makeText(context,"data added to sqlite room",Toast.LENGTH_SHORT).show()
+
+
+
 
 
             }

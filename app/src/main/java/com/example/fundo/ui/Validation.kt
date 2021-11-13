@@ -1,9 +1,11 @@
 package com.example.fundo.ui
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
+import com.example.fundo.R
 import model.UserDetails
 
 object Validation {
@@ -12,7 +14,7 @@ object Validation {
         userName: EditText,
         email: EditText,
         password: EditText,
-        confirmPassword: EditText
+        confirmPassword: EditText,context: Context
     ): Boolean {
         var name = userName.editableText.toString()
         var emailId = email.editableText.toString()
@@ -20,7 +22,7 @@ object Validation {
         var confirmPass = confirmPassword.editableText.toString()
 
         if (name.isEmpty() || name.length < 3) {
-            showError(userName, "Your user name is not valid")
+            showError(userName, context.getString(R.string.error_username_invalid))
             return false
         } else if (emailId.isEmpty() || !emailId.contains('@')) {
             showError(email, "Your email id not valid")

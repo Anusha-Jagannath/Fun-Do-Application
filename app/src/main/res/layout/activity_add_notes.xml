@@ -22,10 +22,8 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/saveNoteBtn"
         android:layout_width="wrap_content"
-
-
         android:layout_height="wrap_content"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="@dimen/margin_note_edittext"
         android:backgroundTint="@color/purple_200"
         android:elevation="6dp"
         android:src="@drawable/ic_baseline_save_24"
@@ -36,9 +34,11 @@
 
     <EditText
         android:id="@+id/inputTitle"
-        android:layout_width="360dp"
+        android:layout_width="0dp"
         android:layout_height="66dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="36dp"
+        android:layout_marginEnd="16dp"
         android:ems="10"
         android:hint="Title"
         android:inputType="textPersonName"
@@ -49,12 +49,14 @@
 
     <EditText
         android:id="@+id/inputNote"
-        android:layout_width="347dp"
-        android:layout_height="69dp"
+        android:layout_width="0dp"
+        android:layout_height="66dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="52dp"
+        android:layout_marginEnd="16dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="Note"
+        android:inputType="textPersonName"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
@@ -80,21 +82,10 @@
         android:id="@+id/updateBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="108dp"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="80dp"
         android:text="update note"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputNote" />
-
-    <Button
-        android:id="@+id/deleteBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
-        android:text="delete note"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toEndOf="@+id/updateBtn"
         app:layout_constraintTop_toBottomOf="@+id/inputNote" />
 
     <ImageView
@@ -107,6 +98,18 @@
         app:layout_constraintHorizontal_bias="0.877"
         app:layout_constraintStart_toEndOf="@+id/backButton"
         app:srcCompat="@drawable/ic_baseline_delete_24" />
+
+    <ImageView
+        android:id="@+id/createLabelBtn"
+        android:layout_width="44dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar2"
+        app:layout_constraintEnd_toStartOf="@+id/deleteImage"
+        app:layout_constraintHorizontal_bias="0.84"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.333"
+        app:srcCompat="@drawable/ic_baseline_add_24" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

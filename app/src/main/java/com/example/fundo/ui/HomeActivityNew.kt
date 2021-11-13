@@ -22,10 +22,7 @@ import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fundo.R
-import com.example.fundo.home.Adapter
-import com.example.fundo.home.AddNotesActivity
-import com.example.fundo.home.GridActivity
-import com.example.fundo.home.Notes
+import com.example.fundo.home.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -42,18 +39,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
-
     private lateinit var noteRecyclerView: RecyclerView
     private lateinit var noteArrayList: ArrayList<Notes>
-
     private lateinit var tempArrayList: ArrayList<Notes>
-
-
-    lateinit var preferences: SharedPreferences
-    //lateinit var logoutBtn: Button
-
-
+    private lateinit var preferences: SharedPreferences
     private lateinit var alertDialog: AlertDialog
     lateinit var profile: ImageView
     lateinit var imageUri: Uri
@@ -107,16 +96,8 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
         addNoteButton.setOnClickListener {
             Toast.makeText(this, "add not fab clicked", Toast.LENGTH_SHORT).show()
-
-
             var intent = Intent(this, AddNotesActivity::class.java)
             startActivity(intent)
-
-//            val fragmentManager = supportFragmentManager
-//            val fragmentTransaction = fragmentManager.beginTransaction()
-//            fragmentTransaction.replace(R.id.fragmentContainerHome, AddNoteFragment())
-//            fragmentTransaction.commit()
-
         }
 
         gridImageView.setOnClickListener {
@@ -145,6 +126,7 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
         if (item.itemId == R.id.contact) {
             Toast.makeText(applicationContext, "contact clicked", Toast.LENGTH_SHORT).show()
+            gotoDeletePage()
         }
 
         if (item.itemId == R.id.settings) {
@@ -154,6 +136,11 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
         drawerLayoutNew.closeDrawer(GravityCompat.START)
 
         return true
+    }
+
+    private fun gotoDeletePage() {
+        var intent = Intent(this,DeletedNotes::class.java)
+        startActivity(intent)
     }
 
 
