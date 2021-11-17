@@ -1,6 +1,6 @@
-package service
+package com.example.fundo.service
 
-import android.widget.Toast
+import com.facebook.login.LoginManager
 import com.google.firebase.auth.FirebaseAuth
 
 class AuthenticationService {
@@ -41,4 +41,12 @@ class AuthenticationService {
                     }
 
     }
+
+    fun logOut() {
+        LoginManager.getInstance().logOut()
+        FirebaseAuth.getInstance().signOut()
+    }
+
+    fun getUid() = FirebaseAuth.getInstance().currentUser!!.uid
+
 }

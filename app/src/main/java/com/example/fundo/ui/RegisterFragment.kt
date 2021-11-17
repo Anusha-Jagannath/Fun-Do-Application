@@ -6,12 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.fundo.R
-import com.google.firebase.auth.FirebaseAuth
-import model.UserDetails
-import service.AuthenticationService
+import com.example.fundo.room.user.User
+import com.example.fundo.room.user.UserDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import com.example.fundo.model.UserDetails
+import com.example.fundo.viewmodels.*
 
-class RegisterFragment: Fragment(R.layout.registerfragment) {
+class RegisterFragment : Fragment(R.layout.registerfragment) {
 
     lateinit var loginText: TextView
     lateinit var userName: EditText
@@ -19,6 +24,9 @@ class RegisterFragment: Fragment(R.layout.registerfragment) {
     lateinit var password: EditText
     lateinit var confirmPassword: EditText
     lateinit var register: Button
+    lateinit var loading: ProgressBar
+    private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var registerViewModel: RegisterViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,51 +41,62 @@ class RegisterFragment: Fragment(R.layout.registerfragment) {
         password = view.findViewById(R.id.userPassword)
         confirmPassword = view.findViewById(R.id.confirmPassword)
 
+        loading = view.findViewById(R.id.progressIcon)
 
+        sharedViewModel = ViewModelProvider(
+            requireActivity(),
+            SharedViewModelFactory()
+        )[SharedViewModel::class.java]
+        registerViewModel =
+            ViewModelProvider(this, RegisterViewModelFactory())[RegisterViewModel::class.java]
 
         register = view.findViewById(R.id.buttonRegister)
+        registerObservers()
         register.setOnClickListener {
 
             if (Validation.checkCredentialsForRegister(
                     userName,
                     email,
                     password,
-                    confirmPassword
+                    confirmPassword,requireContext()
                 )
             ) {
+                loading.visibility = View.VISIBLE
                 var emailId = email.editableText.toString()
                 var pass = password.editableText.toString()
+                var name = userName.editableText.toString()
 
-                AuthenticationService().register(emailId, pass) { status, message ->
-
-                    if (status) {
-                        var newUser = UserDetails(userName.text.toString(),email.text.toString(),true)
-                        var bundle = Bundle()
-                        bundle = Validation.addInfoToBundle(newUser)
-                        var profileFragment = ProfileFragment()
-                        profileFragment.arguments = bundle
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                        requireActivity().supportFragmentManager.beginTransaction().apply {
-                            replace(R.id.fragmentContainer, profileFragment)
-                            commit()
-                        }
-                    }
-
-                    else {
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                    }
+                var status = registerViewModel.registerUser(name, emailId, pass)
+                Toast.makeText(context, "Status : $status", Toast.LENGTH_SHORT).show()
+                if (!status) {
+                    var newUser = UserDetails(name, emailId, true)
+                    registerViewModel.addToDatabase(newUser)
+                    //var database = Database()
+                    //database.saveUserData(newUser)
+                    registerViewModel.setRegisterStatus(newUser)
+                    Toast.makeText(context, "regsiter success", Toast.LENGTH_SHORT).show()
+                    sharedViewModel.setGotoHomePageStatus(newUser)
+                } else {
+                    Toast.makeText(context, "register unsucess", Toast.LENGTH_SHORT).show()
                 }
+              // user dao code added
+              val userInfo = User(null,name,emailId)
+                GlobalScope.launch(Dispatchers.IO) {
+                    UserDatabase.getInstance(this@RegisterFragment).userDao().insert(userInfo)
+                }
+                Toast.makeText(context,"data added to sqlite room",Toast.LENGTH_SHORT).show()
+
+
+
+
+
             }
 
         }
 
         loginText.setOnClickListener {
             Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show()
-
-            requireActivity().supportFragmentManager.beginTransaction().apply {
-                replace(R.id.fragmentContainer, LoginFragment())
-                commit()
-            }
+            sharedViewModel.setGotoLoginPageStatus(true)
 
 
         }
@@ -85,37 +104,27 @@ class RegisterFragment: Fragment(R.layout.registerfragment) {
 
         return view
     }
+
+
+    private fun registerObservers() {
+        registerViewModel.registerStatus.observe(viewLifecycleOwner) {
+            if (it.loginStatus) {
+                Toast.makeText(requireContext(), "User registerd", Toast.LENGTH_SHORT).show()
+                sharedViewModel.setGotoHomePageStatus(it)
+            } else {
+                Toast.makeText(requireContext(), "register failed", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 }
 
 
-//    private fun checkCredentials() {
-//        var name = userName.editableText.toString()
-//        var emailId = email.editableText.toString()
-//        var pass = password.editableText.toString()
-//        var confirmPass = confirmPassword.editableText.toString()
-//
-//        if(name.isEmpty() || name.length <3){
-//            showError(userName,"Your user name is not valid")
-//        }
-//
-//        else if(emailId.isEmpty() || !emailId.contains('@')) {
-//            showError(email,"Your email id not valid")
-//        }
-//        else if(pass.isEmpty() || pass.length <7) {
-//            showError(password,"password not valid")
-//        }
-//        else if(confirmPass.isEmpty() || confirmPass.equals(pass)) {
-//            showError(confirmPassword ,"password not matched")
-//        }
-//        else {
-//            Toast.makeText(context,"Call registration method",Toast.LENGTH_SHORT).show()
-//        }
-//    }
-//
-//    private fun showError(input: EditText, s: String) {
-//        input.setError(s)
-//        input.requestFocus()
-//
-//    }
+
+
+
+
+
+
 
 
