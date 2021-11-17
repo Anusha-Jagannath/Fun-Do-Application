@@ -6,17 +6,12 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.fundo.MainActivity2
 import com.example.fundo.R
 import com.example.fundo.databinding.ActivityMainBinding
-import model.UserDetails
-import viewmodels.SharedViewModel
-import viewmodels.SharedViewModelFactory
+import com.example.fundo.viewmodels.SharedViewModel
+import com.example.fundo.viewmodels.SharedViewModelFactory
 
 open class MainActivity : AppCompatActivity(){
 

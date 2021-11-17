@@ -14,8 +14,10 @@ import com.example.fundo.R
 import com.example.fundo.ui.HomeActivityNew
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.label_dialog.view.*
-import service.DatabaseHelper
-import service.DatabaseService
+import com.example.fundo.service.Database
+import com.example.fundo.service.DatabaseHelper
+import com.example.fundo.service.DatabaseService
+import java.util.*
 
 class AddNotesActivity : AppCompatActivity() {
 
@@ -85,7 +87,7 @@ class AddNotesActivity : AppCompatActivity() {
             var newTitle = addtitle.text.toString()
             var newContent = addContent.text.toString()
             var databaseService = DatabaseService(this)
-            databaseService.updateNotesToDB(key,newTitle,newContent)
+            databaseService.updateNotesToDB(key,newTitle,newContent,this)
 
             if (title != null) {
                 databaseService.updateDataToDB(title,newTitle,newContent,helper)
@@ -104,9 +106,14 @@ class AddNotesActivity : AppCompatActivity() {
         deleteNoteButton.setOnClickListener {
             var key = title + content
             Toast.makeText(this,"delete button clicked",Toast.LENGTH_SHORT).show()
+            var database = Database()
+            val cal = Calendar.getInstance()
+            var date = cal.time.toString()
+            var notes = Notes(title, content, date)
+            database.addDeletedNotesToDB(notes)
             var databaseService = DatabaseService(this)
             if (title != null) {
-                databaseService.deleteNotesFromDB(key,title)
+                databaseService.deleteNotesFromDB(key,title,this)
             }
 
             if (title != null) {

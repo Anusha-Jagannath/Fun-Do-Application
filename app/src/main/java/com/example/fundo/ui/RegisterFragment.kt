@@ -8,13 +8,13 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.fundo.R
-import com.example.fundo.userroomdata.User
-import com.example.fundo.userroomdata.UserDatabase
+import com.example.fundo.room.user.User
+import com.example.fundo.room.user.UserDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import model.UserDetails
-import viewmodels.*
+import com.example.fundo.model.UserDetails
+import com.example.fundo.viewmodels.*
 
 class RegisterFragment : Fragment(R.layout.registerfragment) {
 

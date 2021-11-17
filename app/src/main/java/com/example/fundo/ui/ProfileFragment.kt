@@ -11,11 +11,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.fundo.R
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.content_main.*
-import service.AuthenticationService
-import viewmodels.SharedViewModel
-import viewmodels.SharedViewModelFactory
+import com.example.fundo.service.AuthenticationService
+import com.example.fundo.viewmodels.SharedViewModel
+import com.example.fundo.viewmodels.SharedViewModelFactory
 
 class ProfileFragment : Fragment(R.layout.profilefragment) {
 

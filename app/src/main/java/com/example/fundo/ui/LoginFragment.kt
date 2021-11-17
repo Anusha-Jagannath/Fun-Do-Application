@@ -1,7 +1,6 @@
 package com.example.fundo.ui
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.fundo.MainActivity2
 import com.example.fundo.R
-import com.google.firebase.auth.FirebaseAuth
-import model.UserDetails
-import service.AuthenticationService
-import service.Database
-import viewmodels.LoginViewModel
-import viewmodels.LoginViewModelFactory
-import viewmodels.SharedViewModel
-import viewmodels.SharedViewModelFactory
+import com.example.fundo.model.UserDetails
+import com.example.fundo.viewmodels.LoginViewModel
+import com.example.fundo.viewmodels.LoginViewModelFactory
+import com.example.fundo.viewmodels.SharedViewModel
+import com.example.fundo.viewmodels.SharedViewModelFactory
 
 open class LoginFragment : Fragment(R.layout.loginfragment) {
 

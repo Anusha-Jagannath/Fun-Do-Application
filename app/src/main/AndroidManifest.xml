@@ -15,7 +15,7 @@
             android:name=".home.DeletedNotes"
             android:exported="true" />
         <activity
-            android:name=".home.GridActivity"
+            android:name=".home.HomeGridActivity"
             android:exported="true" />
         <activity
             android:name=".ui.HomeActivityNew"

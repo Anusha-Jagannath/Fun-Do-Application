@@ -20,9 +20,8 @@ import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fundo.AddNoteFragment
 import com.example.fundo.R
-import com.example.fundo.home.Adapter
+import com.example.fundo.home.NotesAdapter
 import com.example.fundo.home.AddNotesActivity
 import com.example.fundo.home.Notes
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -30,10 +29,9 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_main.*
-import service.AuthenticationService
-import service.Database
-import service.Storage
-import viewmodels.*
+import com.example.fundo.service.AuthenticationService
+import com.example.fundo.service.Storage
+import com.example.fundo.viewmodels.*
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -142,7 +140,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         noteArrayList.add(notes!!)
                     }
 
-                    noteRecyclerView.adapter = Adapter(noteArrayList)
+                    noteRecyclerView.adapter = NotesAdapter(noteArrayList)
 
                 }
 

@@ -1,12 +1,11 @@
 package com.example.fundo.ui
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import com.example.fundo.R
-import model.UserDetails
+import com.example.fundo.model.UserDetails
 
 object Validation {
 

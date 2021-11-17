@@ -11,9 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.fundo.R
-import com.google.firebase.auth.FirebaseAuth
-import service.AuthenticationService
-import viewmodels.*
+import com.example.fundo.viewmodels.*
 
 class ForgotPasswordFragment : Fragment() {
 
