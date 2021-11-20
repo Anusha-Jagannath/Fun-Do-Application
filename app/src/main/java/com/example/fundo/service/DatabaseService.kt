@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.fundo.home.Notes
 import com.example.fundo.util.NetworkHandler
 import com.example.fundo.room.note.NoteDatabase
+import com.example.fundo.room.note.NoteKey
 import com.example.fundo.room.note.NotesEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -25,15 +26,15 @@ class DatabaseService(context: Context) {
         if (networkStatus) {
             Log.d("Network check", "network present")
             val database = Database()
-            var notes = Notes(title, content, date)
+            var notes = Notes(title, content, date,null,null)
             database.saveNotes(notes)
 
-            val noteInfo = NotesEntity(null, fid, title, content, date)
+            val noteInfo = NoteKey(null, fid, title, content, date)
             GlobalScope.launch(Dispatchers.IO) {
                 noteDAO.insert(noteInfo)
             }
         } else {
-            val noteInfo = NotesEntity(null, null, title, content, date)
+            val noteInfo = NoteKey(null, null, title, content, date)
             GlobalScope.launch(Dispatchers.IO) {
                 noteDAO.insert(noteInfo)
             }
@@ -42,7 +43,7 @@ class DatabaseService(context: Context) {
     }
 
     private fun syncForInsert() {
-        var localList: List<NotesEntity>
+        var localList: List<NoteKey>
         if (networkStatus) {
             GlobalScope.launch(Dispatchers.IO) {
                 localList = noteDAO.display()
@@ -66,12 +67,12 @@ class DatabaseService(context: Context) {
         if (network) {
             var database = Database()
             database.updateNote(key, newTitle, newContent)
-            val noteInfo = NotesEntity(null, fid, newTitle, newContent, date)
+            val noteInfo = NoteKey(null, fid, newTitle, newContent, date)
             GlobalScope.launch(Dispatchers.IO) {
                 noteDatabase.noteDao().update(noteInfo)
             }
         } else {
-            val noteInfo = NotesEntity(null, fid, newTitle, newContent, date)
+            val noteInfo = NoteKey(null, fid, newTitle, newContent, date)
             GlobalScope.launch(Dispatchers.IO) {
                 noteDatabase.noteDao().update(noteInfo)
             }
@@ -83,7 +84,7 @@ class DatabaseService(context: Context) {
     private fun syncForUpdate(key: String) {
         var remoteList = Database().getNotesData()
         val database = Database()
-        var localList: List<NotesEntity>
+        var localList: List<NoteKey>
         if (networkStatus) {
             GlobalScope.launch(Dispatchers.IO) {
                 localList = noteDAO.display()
@@ -148,6 +149,19 @@ class DatabaseService(context: Context) {
     fun deletePermanent(key: String) {
         var database = Database()
         database.deletePermanent(key)
+    }
+
+    fun addLabelToDB(inputLabel: String) {
+        var database = Database()
+        database.addLabelToDB(inputLabel)
+    }
+    fun deleteLabel(key: String) {
+        var database = Database()
+        database.deleteLabelFromDB(key)
+    }
+    fun updateLabel(inputLabel: String,updatedLabel: String) {
+        var database = Database()
+        database.updateLabel(inputLabel,updatedLabel)
     }
 
 }

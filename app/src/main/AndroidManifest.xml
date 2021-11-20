@@ -12,6 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FunDo">
         <activity
+            android:name=".label.AddLabel"
+            android:exported="true" />
+        <activity
+            android:name=".home.AddingLabel"
+            android:exported="true"
+            android:label="@string/title_activity_adding_label"
+            android:theme="@style/Theme.FunDo.NoActionBar" />
+        <activity
             android:name=".home.DeletedNotes"
             android:exported="true" />
         <activity

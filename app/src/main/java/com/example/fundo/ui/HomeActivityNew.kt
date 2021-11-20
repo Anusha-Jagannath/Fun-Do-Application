@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fundo.R
 import com.example.fundo.home.*
+import com.example.fundo.label.AddLabel
+import com.example.fundo.model.Labels
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -32,8 +34,10 @@ import kotlinx.android.synthetic.main.activity_home_new.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.content_main_new.*
 import com.example.fundo.service.AuthenticationService
+import com.example.fundo.service.Database
 import com.example.fundo.service.Storage
 import com.example.fundo.viewmodels.HomeViewModel
+import kotlinx.android.synthetic.main.activity_grid.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -48,11 +52,17 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
     private lateinit var homeViewModel: HomeViewModel
     private var menu: Menu? = null
     lateinit var addNoteButton: FloatingActionButton
+
     //grid image
     lateinit var gridImageView: ImageView
 
 
-    //lateinit var adapter: NotesAdapter                                            //added night
+    //lateinit var adapter: NotesAdapter
+    //
+    // added night
+    lateinit var key: String
+    lateinit var database: Database
+    lateinit var adapter: NotesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,13 +103,95 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
         noteRecyclerView.setHasFixedSize(true)
         noteArrayList = arrayListOf<Notes>()
         tempArrayList = arrayListOf<Notes>()
-
-        //added night-------------------------
         //adapter = NotesAdapter(noteArrayList)
         //noteRecyclerView.adapter = adapter
-        //end---------------------------
+        key = " "
+        database = Database()
+        loadData()
+        //getNotesAllData()
+    }
 
-        getNotesData()
+
+    //added nw which helped me
+    private fun loadData() {
+        database.get(key).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (noteSnapshot in snapshot.children) {
+                        val notes = noteSnapshot.getValue(Notes::class.java)
+                        noteArrayList.add(notes!!)
+                        key = noteSnapshot.key.toString()
+                        if (key != null) {
+                            Log.d("key", key)
+                        }
+                    }
+
+                    //added mulpa
+                    Log.d("HOME", noteArrayList.toString())
+                    tempArrayList.addAll(noteArrayList)
+                    var adapter = NotesAdapter(tempArrayList)
+                    noteRecyclerView.adapter = adapter
+                    adapter.setOnItemClickListener(object : NotesAdapter.onItemClickListener {
+                        override fun onItemClick(position: Int) {
+                            Toast.makeText(applicationContext, "clickinggg on $position", Toast.LENGTH_SHORT).show()
+                            var note = noteArrayList[position]
+                            var title = note.title.toString()
+                            var content = note.content.toString()
+                            var label1 = note.label1.toString()
+                            var label2 = note.label2.toString()
+                            Log.d("test", title)
+                            Log.d("test", content)
+                            Toast.makeText(applicationContext, "$title", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, "$content", Toast.LENGTH_SHORT)
+                                .show()
+                            var intent = Intent(this@HomeActivityNew, AddNotesActivity::class.java)
+                            intent.putExtra("title", title)
+                            intent.putExtra("content", content)
+                            intent.putExtra("label1", label1)
+                            intent.putExtra("label2", label2)
+                            startActivity(intent)
+
+                        }
+
+                    })
+
+
+                    //mulpa
+
+
+                }
+                //adapter.notifyDataSetChanged()
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+    }
+
+
+
+
+    private fun getNotesAllData() {
+        lateinit var dbref: DatabaseReference
+        var uid = FirebaseAuth.getInstance().currentUser!!.uid
+        dbref = FirebaseDatabase.getInstance().getReference("user").child(uid).child("Notes")
+        dbref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (noteSnapshot in snapshot.children) {
+                        val note = noteSnapshot.getValue(Notes::class.java)
+                        noteArrayList.add(note!!)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -117,12 +209,22 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
         if (item.itemId == R.id.settings) {
             Toast.makeText(applicationContext, "settings clicked", Toast.LENGTH_SHORT).show()
         }
+
+        if (item.itemId == R.id.addLabel) {
+            Toast.makeText(applicationContext, "add label clicked", Toast.LENGTH_SHORT).show()
+            gotoAddLabelPage()
+        }
         drawerLayoutNew.closeDrawer(GravityCompat.START)
         return true
     }
 
+    private fun gotoAddLabelPage() {
+        var intent = Intent(this, AddLabel::class.java)
+        startActivity(intent)
+    }
+
     private fun gotoDeletePage() {
-        var intent = Intent(this,DeletedNotes::class.java)
+        var intent = Intent(this, DeletedNotes::class.java)
         startActivity(intent)
     }
 
@@ -135,6 +237,7 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
             override fun onQueryTextSubmit(query: String?): Boolean {
                 TODO("Not yet implemented")
             }
+
             override fun onQueryTextChange(newText: String?): Boolean {
                 Toast.makeText(applicationContext, "$newText", Toast.LENGTH_SHORT).show()
                 //adapter.filter.filter(newText)
@@ -243,7 +346,9 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
                     for (noteSnapshot in snapshot.children) {
                         val notes = noteSnapshot.getValue(Notes::class.java)
                         noteArrayList.add(notes!!)
+
                     }
+                    Log.d("HOME", noteArrayList.toString())
                     tempArrayList.addAll(noteArrayList)
                     var adapter = NotesAdapter(tempArrayList)
                     noteRecyclerView.adapter = adapter
@@ -257,6 +362,8 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
                             var note = noteArrayList[position]
                             var title = note.title.toString()
                             var content = note.content.toString()
+                            var label1 = note.label1.toString()
+                            var label2 = note.label2.toString()
                             Log.d("test", title)
                             Log.d("test", content)
                             Toast.makeText(applicationContext, "$title", Toast.LENGTH_SHORT).show()
@@ -265,6 +372,8 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
                             var intent = Intent(this@HomeActivityNew, AddNotesActivity::class.java)
                             intent.putExtra("title", title)
                             intent.putExtra("content", content)
+                            intent.putExtra("label1", label1)
+                            intent.putExtra("label2", label2)
                             startActivity(intent)
 
                         }

@@ -12,7 +12,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class NotesAdapter(private var noteList: ArrayList<Notes>) :
-    RecyclerView.Adapter<NotesAdapter.MyViewHolder>(),Filterable {
+    RecyclerView.Adapter<NotesAdapter.MyViewHolder>(),Filterable{
 
     private lateinit var mListener: onItemClickListener
 
@@ -45,6 +45,17 @@ class NotesAdapter(private var noteList: ArrayList<Notes>) :
         val currentItem = noteList[position]
         holder.title.text = currentItem.title
         holder.inputContent.text = currentItem.content
+        if(currentItem.label1 == null || currentItem.label2 == null)
+            holder.inputLabel.text = ""
+
+        if(currentItem.label1 == null || currentItem.label2 != null)
+            holder.inputLabel.text = currentItem.label2
+
+        if(currentItem.label1 != null || currentItem.label2 == null)
+            holder.inputLabel.text = currentItem.label1
+
+        if(currentItem.label1 != null || currentItem.label2 != null)
+            holder.inputLabel.text = currentItem.label1 +" "+currentItem.label2
 
     }
 
@@ -58,6 +69,7 @@ class NotesAdapter(private var noteList: ArrayList<Notes>) :
 
         val title: TextView = itemView.findViewById(R.id.inputTypeTitle)
         val inputContent: TextView = itemView.findViewById(R.id.inputTypeNote)
+        val inputLabel: TextView = itemView.findViewById(R.id.inputTypeLabel)
 
         init {
             itemView.setOnClickListener {
@@ -98,9 +110,7 @@ class NotesAdapter(private var noteList: ArrayList<Notes>) :
 
         }
     }
-//night
-
-
+//filter
 
 
 }

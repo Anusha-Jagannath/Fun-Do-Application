@@ -11,12 +11,17 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import com.example.fundo.R
+import com.example.fundo.room.note.Label
+import com.example.fundo.room.note.NoteDatabase
+import com.example.fundo.room.note.NoteLabelRef
 import com.example.fundo.ui.HomeActivityNew
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.label_dialog.view.*
 import com.example.fundo.service.Database
 import com.example.fundo.service.DatabaseHelper
 import com.example.fundo.service.DatabaseService
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 class AddNotesActivity : AppCompatActivity() {
@@ -28,6 +33,7 @@ class AddNotesActivity : AppCompatActivity() {
     lateinit var updateNoteButton: Button
     lateinit var deleteNoteButton: ImageView
     lateinit var labelNoteBtn:ImageView
+    var count = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +50,8 @@ class AddNotesActivity : AppCompatActivity() {
 
         var title = intent.getStringExtra("title")
         var content = intent.getStringExtra("content")
+        var label1 = intent.getStringExtra("label1")
+        var label2 = intent.getStringExtra("label2")
 
         addtitle.setText(title)
         addContent.setText(content)
@@ -61,17 +69,26 @@ class AddNotesActivity : AppCompatActivity() {
 
                 databaseService.addDataToDB(title,note,helper)
                 Toast.makeText(this,"note saved to sqlite",Toast.LENGTH_SHORT).show()
-
-//                val noteInfo = Note(null,title,note)
-//                GlobalScope.launch(Dispatchers.IO){
-//                    NoteDatabase.getInstance(this@AddNotesActivity).noteDao().insert(noteInfo)
-//                }
                 Toast.makeText(this,"record saved to sqlite room",Toast.LENGTH_SHORT).show()
 
             } else {
                 Toast.makeText(applicationContext, "Empty note discarded", Toast.LENGTH_SHORT)
                     .show()
             }
+
+            //val label = Label(null,"outing")
+            //NoteDatabase.getInstance(this@AddNotesActivity).noteDao().insertLabel(label)
+
+            //val ref = NoteLabelRef(1,1)
+            //NoteDatabase.getInstance(this@AddNotesActivity).noteDao().insertNoteLabelRef(ref)
+
+            //NoteDatabase.getInstance(this@AddNotesActivity).noteDao().getNotesWithLabels()
+            //NoteDatabase.getInstance(this@AddNotesActivity).noteDao().getNotesWithLabelsById(1)
+
+            //NoteDatabase.getInstance(this@AddNotesActivity).noteDao().getLabelsWithNotes()
+            //NoteDatabase.getInstance(this@AddNotesActivity).noteDao().getLabelsWithNotesById(1)
+
+
         }
 
         backButton.setOnClickListener {
@@ -92,13 +109,6 @@ class AddNotesActivity : AppCompatActivity() {
             if (title != null) {
                 databaseService.updateDataToDB(title,newTitle,newContent,helper)
             }
-
-
-//            val noteInfo = Note(null,newTitle,newContent)
-//            GlobalScope.launch(Dispatchers.IO){
-//                NoteDatabase.getInstance(this@AddNotesActivity).noteDao().update(noteInfo)
-//
-//            }
             Toast.makeText(this, "updated in sqlite room", Toast.LENGTH_SHORT).show()
 
         }
@@ -145,6 +155,20 @@ class AddNotesActivity : AppCompatActivity() {
                 //get text from editText
                 val labelInput = dialogView.dialogLabelInput.text.toString()
                 Toast.makeText(this,"$labelInput",Toast.LENGTH_SHORT).show()
+                var key = title+content
+                var database = Database()
+                //database.saveLabel(key,labelInput)
+                var noteLabel = Notes(title,content,label1,label2)
+                if(count == 0) {
+                    Log.d("IM",count.toString())
+                    database.saveLabelToNotesOne(key, noteLabel, labelInput)
+                    count++
+                }
+                else {
+                    Log.d("CM",count.toString())
+                    database.saveLabelToNotesSecond(key, noteLabel, labelInput)
+                }
+
             }
             dialogView.dialogCancelBtn.setOnClickListener {
                 //dismiss the dialog
