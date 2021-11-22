@@ -140,10 +140,10 @@ class Database {
         dbref = FirebaseDatabase.getInstance().getReference("user").child(uid).child("Notes")
 
         if (key == " ") {
-            return dbref.orderByKey().limitToFirst(10)
+            return dbref.orderByKey().limitToFirst(8)
         } else {
             //dbref.equalTo("randomlabel","labelId")
-            return dbref.orderByKey().startAfter(key).limitToFirst(10)
+            return dbref.orderByKey().startAfter(key).limitToFirst(8)
         }
 
     }

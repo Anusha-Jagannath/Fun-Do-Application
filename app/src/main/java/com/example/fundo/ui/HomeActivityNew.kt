@@ -21,12 +21,12 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.fundo.R
 import com.example.fundo.home.*
 import com.example.fundo.label.AddLabel
 import com.example.fundo.label.ArchivedNotes
 import com.example.fundo.label.ReminderNotes
-import com.example.fundo.model.Labels
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -62,9 +62,11 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
     //lateinit var adapter: NotesAdapter
     //
     // added night
+    lateinit var swipeRefreshLayout: SwipeRefreshLayout
     lateinit var key: String
     lateinit var database: Database
     lateinit var adapter: NotesAdapter
+    var isLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,6 +102,7 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
             var intent = Intent(this, HomeGridActivity::class.java)
             startActivity(intent)
         }
+        swipeRefreshLayout = findViewById(R.id.swipe)
         noteRecyclerView = findViewById(R.id.noteList)
         noteRecyclerView.layoutManager = LinearLayoutManager(this)
         noteRecyclerView.setHasFixedSize(true)
@@ -107,15 +110,40 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
         tempArrayList = arrayListOf<Notes>()
         //adapter = NotesAdapter(noteArrayList)
         //noteRecyclerView.adapter = adapter
+        //adapter = NotesAdapter(tempArrayList)
+        //noteRecyclerView.adapter = adapter
         key = " "
         database = Database()
         loadData()
         //getNotesAllData()
+        noteRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                Log.i("grid","increment page test")
+                val visibleItemCount = (noteRecyclerView.layoutManager as LinearLayoutManager).childCount
+                val lastVisibleItem =
+                    (noteRecyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+                Log.d("RECORD",visibleItemCount.toString())
+                Log.d("RECORD",lastVisibleItem.toString())
+                val total = adapter.itemCount
+                Log.d("TOTAL",total.toString())
+                if(total < lastVisibleItem+3) {
+                    if(!isLoading) {
+                        isLoading = true
+                        loadData()
+                    }
+                }
+
+
+
+            }
+        })
     }
 
 
     //added nw which helped me
     private fun loadData() {
+        swipeRefreshLayout.isRefreshing = true
         database.get(key).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -131,8 +159,13 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
                     //added mulpa
                     Log.d("HOME", noteArrayList.toString())
                     tempArrayList.addAll(noteArrayList)
-                    var adapter = NotesAdapter(tempArrayList)
+                    adapter = NotesAdapter(tempArrayList)
                     noteRecyclerView.adapter = adapter
+
+                    adapter.notifyDataSetChanged()
+                    isLoading = false
+                    swipeRefreshLayout.isRefreshing = false
+
                     adapter.setOnItemClickListener(object : NotesAdapter.onItemClickListener {
                         override fun onItemClick(position: Int) {
                             Toast.makeText(applicationContext, "clickinggg on $position", Toast.LENGTH_SHORT).show()
@@ -163,6 +196,8 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
                 }
                 //adapter.notifyDataSetChanged()
+                //isLoading = false
+                //swipeRefreshLayout.isRefreshing = false
 
             }
 
@@ -218,9 +253,16 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
             Toast.makeText(applicationContext, "add label clicked", Toast.LENGTH_SHORT).show()
             gotoAddLabelPage()
         }
+
+        if (item.itemId == R.id.endless) {
+            Toast.makeText(applicationContext, "add label clicked", Toast.LENGTH_SHORT).show()
+
+        }
         drawerLayoutNew.closeDrawer(GravityCompat.START)
         return true
     }
+
+    
 
     private fun gotoReminderPage() {
         var intent = Intent(this,ReminderNotes::class.java)

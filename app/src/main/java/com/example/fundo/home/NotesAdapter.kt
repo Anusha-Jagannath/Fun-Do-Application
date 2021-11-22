@@ -12,7 +12,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class NotesAdapter(private var noteList: ArrayList<Notes>) :
-    RecyclerView.Adapter<NotesAdapter.MyViewHolder>(){
+    RecyclerView.Adapter<NotesAdapter.MyViewHolder>(),Filterable{
 
     private lateinit var mListener: onItemClickListener
 
@@ -80,37 +80,37 @@ class NotesAdapter(private var noteList: ArrayList<Notes>) :
     }
 
     //night
-//    override fun getFilter(): Filter {
-//        return object : Filter() {
-//            override fun performFiltering(constraint: CharSequence?): FilterResults {
-//                val charSearch = constraint.toString()
-//                filteredNotes = if (charSearch.isEmpty()) {
-//                    noteList as ArrayList<Notes>
-//                } else {
-//                    val resultList = ArrayList<Notes>()
-//                    for (row in noteList) {
-//                        if ((row.title!!.lowercase(Locale.ROOT)
-//                                .contains(charSearch.lowercase(Locale.ROOT))
-//                                    or (row.content!!.lowercase(Locale.ROOT)
-//                                .contains(charSearch.lowercase(Locale.ROOT))))
-//                        ) {
-//                            resultList.add(row)
-//                        }
-//                    }
-//                    resultList
-//                }
-//                val filterResults = FilterResults()
-//                filterResults.values = filteredNotes
-//                return filterResults
-//            }
-//
-//            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-//                filteredNotes = results?.values as ArrayList<Notes>
-//                notifyDataSetChanged()
-//            }
-//
-//        }
-//    }
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val charSearch = constraint.toString()
+                filteredNotes = if (charSearch.isEmpty()) {
+                    noteList as ArrayList<Notes>
+                } else {
+                    val resultList = ArrayList<Notes>()
+                    for (row in noteList) {
+                        if ((row.title!!.lowercase(Locale.ROOT)
+                                .contains(charSearch.lowercase(Locale.ROOT))
+                                    or (row.content!!.lowercase(Locale.ROOT)
+                                .contains(charSearch.lowercase(Locale.ROOT))))
+                        ) {
+                            resultList.add(row)
+                        }
+                    }
+                    resultList
+                }
+                val filterResults = FilterResults()
+                filterResults.values = filteredNotes
+                return filterResults
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                filteredNotes = results?.values as ArrayList<Notes>
+                notifyDataSetChanged()
+            }
+
+        }
+    }
 //filter
 
 
