@@ -24,6 +24,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fundo.R
 import com.example.fundo.home.*
 import com.example.fundo.label.AddLabel
+import com.example.fundo.label.ArchivedNotes
+import com.example.fundo.label.ReminderNotes
 import com.example.fundo.model.Labels
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -200,6 +202,7 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
         if (item.itemId == R.id.about) {
             Toast.makeText(applicationContext, "about clicked", Toast.LENGTH_SHORT).show()
+            gotoArchivedNotesPage()
         }
         if (item.itemId == R.id.contact) {
             Toast.makeText(applicationContext, "contact clicked", Toast.LENGTH_SHORT).show()
@@ -208,6 +211,7 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
         if (item.itemId == R.id.settings) {
             Toast.makeText(applicationContext, "settings clicked", Toast.LENGTH_SHORT).show()
+            gotoReminderPage()
         }
 
         if (item.itemId == R.id.addLabel) {
@@ -216,6 +220,16 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
         drawerLayoutNew.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun gotoReminderPage() {
+        var intent = Intent(this,ReminderNotes::class.java)
+        startActivity(intent)
+    }
+
+    private fun gotoArchivedNotesPage() {
+       var intent = Intent(this,ArchivedNotes::class.java)
+        startActivity(intent)
     }
 
     private fun gotoAddLabelPage() {

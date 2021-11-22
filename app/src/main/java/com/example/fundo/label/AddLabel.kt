@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fundo.R
 import com.example.fundo.home.LabelsAdapter
+import com.example.fundo.home.NotesAdapter
 import com.example.fundo.model.Labels
 import com.example.fundo.service.Database
 import com.example.fundo.service.DatabaseService
@@ -28,6 +29,9 @@ class AddLabel : AppCompatActivity() {
     private lateinit var addLabel: ImageView
     private lateinit var labelRecyclerView: RecyclerView
     private lateinit var labelArrayList: ArrayList<Labels>
+
+    //lateinit var adapter: LabelsAdapter //added
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_label)
@@ -38,6 +42,9 @@ class AddLabel : AppCompatActivity() {
         labelRecyclerView.layoutManager = LinearLayoutManager(this)
         labelRecyclerView.setHasFixedSize(true)
         labelArrayList = arrayListOf<Labels>()
+
+        //adapter = LabelsAdapter(labelArrayList) //added nw
+        //labelRecyclerView.adapter = adapter
 
         backHome.setOnClickListener {
             Toast.makeText(this, "back button clicked", Toast.LENGTH_SHORT).show()
@@ -71,6 +78,7 @@ class AddLabel : AppCompatActivity() {
                         val labels = labelSnapshot.getValue(Labels::class.java)
                         labelArrayList.add(labels!!)
                     }
+                    Log.d("ARRAy",labelArrayList.toString())
                     var adapter = LabelsAdapter(labelArrayList)
                     labelRecyclerView.adapter = adapter
                     adapter.setOnItemClickListener(object : LabelsAdapter.onItemClickListener {
@@ -87,7 +95,8 @@ class AddLabel : AppCompatActivity() {
                             if (key != null) {
                                 database.deleteLabelFromDB(key)
                             }
-                            adapter.notifyItemChanged(position)
+                            labelArrayList.remove(label) //added
+                            adapter.notifyDataSetChanged()
 
                         }
 
@@ -107,10 +116,10 @@ class AddLabel : AppCompatActivity() {
                                     database.updateLabel(key, updatedLabel)
                                 }
                             }
+
                         }
 
                     })
-
                 }
 
             }

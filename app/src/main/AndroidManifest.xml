@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FunDo">
         <activity
+            android:name=".label.ReminderNotes"
+            android:exported="true" />
+        <activity
+            android:name=".label.ArchivedNotes"
+            android:exported="true" />
+        <activity
             android:name=".label.AddLabel"
             android:exported="true" />
         <activity

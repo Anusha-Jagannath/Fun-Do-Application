@@ -234,4 +234,35 @@ class Database {
         }
     }
 
+    fun saveArchivedNotes(notes: Notes) {
+        var first = notes.title
+        var second = notes.content
+        var key = first + second
+        var uid = FirebaseAuth.getInstance().currentUser!!.uid
+        FirebaseDatabase.getInstance().getReference("ArchivedNotes")
+            .child(uid).child(key)
+            .setValue(notes).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Log.d("Database", "note successfully added")
+                    Log.d("test", key)
+                }
+            }
+    }
+
+    fun saveReminderNotes(notes: Notes) {
+        var first = notes.title
+        var second = notes.content
+        var key = first + second
+        var uid = FirebaseAuth.getInstance().currentUser!!.uid
+        FirebaseDatabase.getInstance().getReference("ReminderNotes")
+            .child(uid).child(key)
+            .setValue(notes).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Log.d("Database", "note successfully added")
+                    Log.d("test", key)
+                }
+            }
+    }
+
+
 }
