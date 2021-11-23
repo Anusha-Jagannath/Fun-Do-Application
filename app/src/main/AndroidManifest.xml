@@ -3,6 +3,7 @@
     package="com.example.fundo">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
 
     <application
         android:allowBackup="true"
@@ -11,6 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FunDo">
+
+        <receiver android:name=".home.Notification"
+            android:enabled="true"/>
         <activity
             android:name=".label.EndlessView"
             android:exported="true" />

@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -62,8 +63,8 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
     //lateinit var adapter: NotesAdapter
     //
     // added night
-    lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    lateinit var key: String
+    //lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private var key: String = " "
     lateinit var database: Database
     lateinit var adapter: NotesAdapter
     var isLoading = false
@@ -102,7 +103,7 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
             var intent = Intent(this, HomeGridActivity::class.java)
             startActivity(intent)
         }
-        swipeRefreshLayout = findViewById(R.id.swipe)
+        //swipeRefreshLayout = findViewById(R.id.swipe)
         noteRecyclerView = findViewById(R.id.noteList)
         noteRecyclerView.layoutManager = LinearLayoutManager(this)
         noteRecyclerView.setHasFixedSize(true)
@@ -112,7 +113,6 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
         //noteRecyclerView.adapter = adapter
         //adapter = NotesAdapter(tempArrayList)
         //noteRecyclerView.adapter = adapter
-        key = " "
         database = Database()
         loadData()
         //getNotesAllData()
@@ -138,12 +138,17 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
             }
         })
+
+
     }
+
+
 
 
     //added nw which helped me
     private fun loadData() {
-        swipeRefreshLayout.isRefreshing = true
+        //swipeRefreshLayout.isRefreshing = true
+        progressID.visibility = View.VISIBLE
         database.get(key).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -156,7 +161,7 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
                         }
                     }
 
-                    //added mulpa
+
                     Log.d("HOME", noteArrayList.toString())
                     tempArrayList.addAll(noteArrayList)
                     adapter = NotesAdapter(tempArrayList)
@@ -164,7 +169,8 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
                     adapter.notifyDataSetChanged()
                     isLoading = false
-                    swipeRefreshLayout.isRefreshing = false
+                    //swipeRefreshLayout.isRefreshing = false
+                    progressID.visibility = View.GONE
 
                     adapter.setOnItemClickListener(object : NotesAdapter.onItemClickListener {
                         override fun onItemClick(position: Int) {
