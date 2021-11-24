@@ -14,7 +14,9 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.work.*
 import com.example.fundo.*
+import com.example.fundo.R
 import com.example.fundo.room.note.Label
 import com.example.fundo.room.note.NoteDatabase
 import com.example.fundo.room.note.NoteLabelRef
@@ -28,6 +30,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class AddNotesActivity : AppCompatActivity() {
 
@@ -52,7 +55,7 @@ class AddNotesActivity : AppCompatActivity() {
     var timeFormat = SimpleDateFormat("hh:mm:a", Locale.US)
     var count = 0
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    //@RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_notes)
@@ -173,7 +176,7 @@ class AddNotesActivity : AppCompatActivity() {
 
             Log.d("TIMER", HOUR.toString())
             Log.d("TIMER", MIN.toString())
-            scheduleNotification()
+            //scheduleNotification()
 
         }
 
@@ -256,9 +259,34 @@ class AddNotesActivity : AppCompatActivity() {
             }
         }
 
-        createNotificationChannel()
+        //createNotificationChannel()
+        //simpleWork()
+
+        myWorkManager()
     }
 
+    private fun myWorkManager() {
+        val constraints = Constraints.Builder()
+            .setRequiresCharging(false)
+            .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+            .setRequiresCharging(false)
+            .setRequiresBatteryNotLow(true)
+            .build()
+
+        val myRequest = PeriodicWorkRequest.Builder(MyWorker::class.java,
+            15, TimeUnit.MINUTES).setConstraints(constraints).build()
+
+        WorkManager.getInstance(this)
+            .enqueueUniquePeriodicWork("my_id",ExistingPeriodicWorkPolicy.KEEP,myRequest)
+    }
+
+    private fun simpleWork() {
+        val mRequest: WorkRequest = OneTimeWorkRequestBuilder<MyWorker>()
+            .build()
+        WorkManager.getInstance(this)
+            .enqueue(mRequest)
+    }
+//here
     @RequiresApi(Build.VERSION_CODES.M)
     private fun scheduleNotification() {
         Log.d("D", "inside scheudle channel")
@@ -311,11 +339,11 @@ class AddNotesActivity : AppCompatActivity() {
 
     }
 
-//    private fun getTime(): Long {
-//        val calendar = Calendar.getInstance()
-//        calendar.set(YEAR, MM, DAY, HOUR, MIN)
-//        return calendar.timeInMillis
-//    }
+    private fun getTime(): Long {
+        val calendar = Calendar.getInstance()
+        calendar.set(YEAR, MM, DAY, HOUR, MIN)
+        return calendar.timeInMillis
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
@@ -330,7 +358,7 @@ class AddNotesActivity : AppCompatActivity() {
 
 
     }
-
+//here
     private fun gotoHomePage() {
         var intent = Intent(this, HomeActivityNew::class.java)
         startActivity(intent)
