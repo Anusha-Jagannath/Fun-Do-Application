@@ -39,4 +39,7 @@ interface NoteDAO {
     @Query("select * from Label where labelId=:labelId")
     fun getlabelsWithNotesById(labelId:Int): List<LabelsWithNotes>
 
+    @Query("select * from NoteKey LIMIT:limit OFFSET:offset")
+    fun getPagedNotes(limit: Int,offset: Int):List<NoteKey>
+
 }

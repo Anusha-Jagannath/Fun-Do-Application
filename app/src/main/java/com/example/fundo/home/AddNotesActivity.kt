@@ -177,6 +177,7 @@ class AddNotesActivity : AppCompatActivity() {
             Log.d("TIMER", HOUR.toString())
             Log.d("TIMER", MIN.toString())
             //scheduleNotification()
+            //myWorkManager()
 
         }
 
@@ -213,12 +214,6 @@ class AddNotesActivity : AppCompatActivity() {
             if (title != null) {
                 databaseService.deleteDataFromDB(title, helper)
             }
-
-//            GlobalScope.launch(Dispatchers.IO){
-//                if (title != null) {
-//                    NoteDatabase.getInstance(this@AddNotesActivity).noteDao().delete(title)
-//                }
-//            }
             Toast.makeText(this, "deleted from sqlite", Toast.LENGTH_SHORT).show()
         }
 
@@ -259,9 +254,6 @@ class AddNotesActivity : AppCompatActivity() {
             }
         }
 
-        //createNotificationChannel()
-        //simpleWork()
-
         myWorkManager()
     }
 
@@ -273,8 +265,15 @@ class AddNotesActivity : AppCompatActivity() {
             .setRequiresBatteryNotLow(true)
             .build()
 
+        //added
+        val calendar = Calendar.getInstance()
+         calendar.set(YEAR, MM, DAY, HOUR, MIN)
+        var time = calendar.timeInMillis
+        Log.d("YTime",time.toString())
+        //added
+
         val myRequest = PeriodicWorkRequest.Builder(MyWorker::class.java,
-            15, TimeUnit.MINUTES).setConstraints(constraints).build()
+            2, TimeUnit.MINUTES).setConstraints(constraints).build()
 
         WorkManager.getInstance(this)
             .enqueueUniquePeriodicWork("my_id",ExistingPeriodicWorkPolicy.KEEP,myRequest)

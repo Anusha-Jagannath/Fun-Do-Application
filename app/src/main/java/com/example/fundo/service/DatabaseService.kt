@@ -7,6 +7,9 @@ import com.example.fundo.util.NetworkHandler
 import com.example.fundo.room.note.NoteDatabase
 import com.example.fundo.room.note.NoteKey
 import com.example.fundo.room.note.NotesEntity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -163,6 +166,32 @@ class DatabaseService(context: Context) {
         var database = Database()
         database.updateLabel(inputLabel,updatedLabel)
     }
+    fun loadPage(key: String) {
+        val cal = Calendar.getInstance()
+        var date = cal.time.toString()
+        val remoteList = getData(key)
+        for(list in remoteList.toString()) {
+            val noteInfo = NoteKey(null, fid, "title","content", date)
+            GlobalScope.launch(Dispatchers.IO) {
+                noteDAO.insert(noteInfo)
+            }
+        }
+        noteDAO.getPagedNotes(10,1)
+    }
+
+    private fun getData(key: String): Any {
+        lateinit var dbref: DatabaseReference
+        var uid = FirebaseAuth.getInstance().currentUser!!.uid
+        dbref = FirebaseDatabase.getInstance().getReference("user").child(uid).child("Notes")
+
+        if (key == " ") {
+            return dbref.orderByKey().limitToFirst(8)
+        } else {
+            //dbref.equalTo("randomlabel","labelId")
+            return dbref.orderByKey().startAfter(key).limitToFirst(8)
+        }
+    }
+
 
 }
 
