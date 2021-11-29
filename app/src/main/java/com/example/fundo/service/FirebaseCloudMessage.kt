@@ -1,18 +1,12 @@
 package com.example.fundo.service
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.os.Build
+
 import android.util.Log
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
-import com.example.fundo.MyWorker
-import com.example.fundo.R
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
 class FirebaseCloudMessage : FirebaseMessagingService() {
-
     override fun onNewToken(token: String) {
         Log.d("DIY", "Refreshed token $token")
     }
@@ -27,10 +21,9 @@ class FirebaseCloudMessage : FirebaseMessagingService() {
         if (remoteMessage.notification != null) {
             Log.d("TAG", "Message Notification Body: " + remoteMessage.notification!!.body)
         }
+        Log.d("message","Message received")
 
-        val title = remoteMessage.data
-        val content = remoteMessage.notification
-        
 
     }
+
 }

@@ -8,8 +8,8 @@ import com.example.fundo.room.note.NoteDatabase
 import com.example.fundo.room.note.NoteKey
 import com.example.fundo.room.note.NotesEntity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -29,7 +29,7 @@ class DatabaseService(context: Context) {
         if (networkStatus) {
             Log.d("Network check", "network present")
             val database = Database()
-            var notes = Notes(title, content, date,null,null)
+            var notes = Notes(title, content, date, null, null)
             database.saveNotes(notes)
 
             val noteInfo = NoteKey(null, fid, title, content, date)
@@ -158,28 +158,48 @@ class DatabaseService(context: Context) {
         var database = Database()
         database.addLabelToDB(inputLabel)
     }
+
     fun deleteLabel(key: String) {
         var database = Database()
         database.deleteLabelFromDB(key)
     }
-    fun updateLabel(inputLabel: String,updatedLabel: String) {
+
+    fun updateLabel(inputLabel: String, updatedLabel: String) {
         var database = Database()
-        database.updateLabel(inputLabel,updatedLabel)
-    }
-    fun loadPage(key: String) {
-        val cal = Calendar.getInstance()
-        var date = cal.time.toString()
-        val remoteList = getData(key)
-        for(list in remoteList.toString()) {
-            val noteInfo = NoteKey(null, fid, "title","content", date)
-            GlobalScope.launch(Dispatchers.IO) {
-                noteDAO.insert(noteInfo)
-            }
-        }
-        noteDAO.getPagedNotes(10,1)
+        database.updateLabel(inputLabel, updatedLabel)
     }
 
-    private fun getData(key: String): Any {
+    fun loadPage(key: String, offset: Int, title: String, content: String) {
+        val cal = Calendar.getInstance()
+        var date = cal.time.toString()
+        var uid = FirebaseAuth.getInstance().currentUser!!.uid
+        val dbref = FirebaseDatabase.getInstance().getReference("user").child(uid).child("Notes")
+        getData(key).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    CoroutineScope(Dispatchers.Default).launch {
+                        for (noteSnapshot in snapshot.children) {
+                            val note = noteSnapshot.getValue(Notes::class.java)
+                            val noteInfo =
+                                NoteKey(null, fid, note?.title.toString(), note?.content, date)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                noteDAO.insert(noteInfo)
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })
+
+        noteDAO.getPagedNotes(10, offset)
+    }
+
+
+    private fun getData(key: String): Query {
         lateinit var dbref: DatabaseReference
         var uid = FirebaseAuth.getInstance().currentUser!!.uid
         dbref = FirebaseDatabase.getInstance().getReference("user").child(uid).child("Notes")
