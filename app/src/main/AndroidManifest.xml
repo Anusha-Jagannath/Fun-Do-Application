@@ -11,6 +11,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FunDo">
+
+
+        <activity
+            android:name=".label.EndlessView"
+            android:exported="true" />
+        <activity
+            android:name=".label.ReminderNotes"
+            android:exported="true" />
+        <activity
+            android:name=".label.ArchivedNotes"
+            android:exported="true" />
+        <activity
+            android:name=".label.AddLabel"
+            android:exported="true" />
+        <activity
+            android:name=".home.AddingLabel"
+            android:exported="true"
+            android:label="@string/title_activity_adding_label"
+            android:theme="@style/Theme.FunDo.NoActionBar" />
         <activity
             android:name=".home.DeletedNotes"
             android:exported="true" />
@@ -54,6 +73,15 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+
+        <service
+            android:name=".service.FirebaseCloudMessage"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

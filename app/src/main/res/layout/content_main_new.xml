@@ -21,7 +21,6 @@
         android:id="@+id/createNoteBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_marginTop="500dp"
         android:backgroundTint="@color/purple_200"
         android:elevation="6dp"
@@ -32,6 +31,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar3" />
 
+<!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+<!--        android:id="@+id/swipe"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/toolbar3"-->
+<!--        >-->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/noteList"
         android:layout_width="410dp"
@@ -41,6 +47,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar3"
         tools:listitem="@layout/note_item" />
+
+    <!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+
+
+    <ProgressBar
+        android:id="@+id/progressID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createNoteBtn" />
 
     <ImageView
         android:id="@+id/imageView"

@@ -20,6 +20,7 @@ class DeletedNotes : AppCompatActivity() {
     private lateinit var deletedRecyclerView: RecyclerView
     private lateinit var noteArrayList: ArrayList<Notes>
     lateinit var backButton: ImageView
+    lateinit var adapter: NotesAdapter //added
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_deleted_notes)
@@ -27,6 +28,10 @@ class DeletedNotes : AppCompatActivity() {
         deletedRecyclerView.layoutManager = LinearLayoutManager(this)
         deletedRecyclerView.setHasFixedSize(true)
         noteArrayList = arrayListOf<Notes>()
+
+        adapter = NotesAdapter(noteArrayList) //added
+        deletedRecyclerView.adapter = adapter
+
         backButton = findViewById(R.id.backImageView)
         backButton.setOnClickListener {
             gotoHomeActivity()
@@ -52,8 +57,8 @@ class DeletedNotes : AppCompatActivity() {
                         val notes = noteSnapshot.getValue(Notes::class.java)
                         noteArrayList.add(notes!!)
                     }
-                    var adapter = NotesAdapter(noteArrayList)
-                    deletedRecyclerView.adapter = adapter
+                    //var adapter = NotesAdapter(noteArrayList)
+                   // deletedRecyclerView.adapter = adapter
                     adapter.setOnItemClickListener(object : NotesAdapter.onItemClickListener {
                         override fun onItemClick(position: Int) {
                             Toast.makeText(
@@ -62,12 +67,14 @@ class DeletedNotes : AppCompatActivity() {
                                 Toast.LENGTH_SHORT
                             ).show()
                             var note = noteArrayList[position]
-                            openAlert(note)
+                            openAlert(note,position)
                         }
 
                     })
 
                 }
+
+                adapter.notifyDataSetChanged() //added
 
             }
 
@@ -77,7 +84,7 @@ class DeletedNotes : AppCompatActivity() {
         })
     }
 
-    private fun openAlert(notes: Notes) {
+    private fun openAlert(notes: Notes,position: Int) {
         var key = notes.title + notes.content
         if (key != null) {
             Log.d("Key", key)
@@ -90,6 +97,8 @@ class DeletedNotes : AppCompatActivity() {
             if (key != null) {
                 database.deletePermanent(key)
             }
+            noteArrayList.remove(notes)
+            adapter.notifyItemChanged(position)
         })
         alertDialog.setNegativeButton(
             "Restore",
@@ -99,7 +108,9 @@ class DeletedNotes : AppCompatActivity() {
                 if (key != null) {
                     database.deletePermanent(key)
                 }
+                database.saveArchivedNotes(notes)
             })
         alertDialog.show()
+
     }
 }

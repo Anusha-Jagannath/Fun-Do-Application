@@ -12,10 +12,10 @@ import com.example.fundo.R
 import com.example.fundo.databinding.ActivityMainBinding
 import com.example.fundo.viewmodels.SharedViewModel
 import com.example.fundo.viewmodels.SharedViewModelFactory
+import com.google.firebase.auth.FirebaseAuth
 
 open class MainActivity : AppCompatActivity(){
 
-    //lateinit var facebookButton: ImageView
     lateinit var binding: ActivityMainBinding
     private lateinit var sharedViewModel: SharedViewModel
 
@@ -25,22 +25,18 @@ open class MainActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //setContentView(R.layout.activity_main)
-
-        //replaceFragment(LoginFragment())
-
-        //facebookButton = findViewById(R.id.facebookbtn)
-
         sharedPreference = getSharedPreferences("USER_INFO",Context.MODE_PRIVATE)
-
         sharedViewModel = ViewModelProvider(this@MainActivity, SharedViewModelFactory())[SharedViewModel::class.java]
         observeAppNavigation()
-        gotoLoginPage()
-
-
-
+        if(FirebaseAuth.getInstance().currentUser != null)
+        {
+            gotoHomeActivity()
+        }
+        else
+        {
+            gotoLoginPage()
+        }
         Log.i("MainActivity","App status : on create")
-
 
     }
 

@@ -5,7 +5,11 @@ import android.util.Log
 import com.example.fundo.home.Notes
 import com.example.fundo.util.NetworkHandler
 import com.example.fundo.room.note.NoteDatabase
+import com.example.fundo.room.note.NoteKey
 import com.example.fundo.room.note.NotesEntity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -25,15 +29,15 @@ class DatabaseService(context: Context) {
         if (networkStatus) {
             Log.d("Network check", "network present")
             val database = Database()
-            var notes = Notes(title, content, date)
+            var notes = Notes(title, content, date, null, null)
             database.saveNotes(notes)
 
-            val noteInfo = NotesEntity(null, fid, title, content, date)
+            val noteInfo = NoteKey(null, fid, title, content, date)
             GlobalScope.launch(Dispatchers.IO) {
                 noteDAO.insert(noteInfo)
             }
         } else {
-            val noteInfo = NotesEntity(null, null, title, content, date)
+            val noteInfo = NoteKey(null, null, title, content, date)
             GlobalScope.launch(Dispatchers.IO) {
                 noteDAO.insert(noteInfo)
             }
@@ -42,7 +46,7 @@ class DatabaseService(context: Context) {
     }
 
     private fun syncForInsert() {
-        var localList: List<NotesEntity>
+        var localList: List<NoteKey>
         if (networkStatus) {
             GlobalScope.launch(Dispatchers.IO) {
                 localList = noteDAO.display()
@@ -66,12 +70,12 @@ class DatabaseService(context: Context) {
         if (network) {
             var database = Database()
             database.updateNote(key, newTitle, newContent)
-            val noteInfo = NotesEntity(null, fid, newTitle, newContent, date)
+            val noteInfo = NoteKey(null, fid, newTitle, newContent, date)
             GlobalScope.launch(Dispatchers.IO) {
                 noteDatabase.noteDao().update(noteInfo)
             }
         } else {
-            val noteInfo = NotesEntity(null, fid, newTitle, newContent, date)
+            val noteInfo = NoteKey(null, fid, newTitle, newContent, date)
             GlobalScope.launch(Dispatchers.IO) {
                 noteDatabase.noteDao().update(noteInfo)
             }
@@ -83,7 +87,7 @@ class DatabaseService(context: Context) {
     private fun syncForUpdate(key: String) {
         var remoteList = Database().getNotesData()
         val database = Database()
-        var localList: List<NotesEntity>
+        var localList: List<NoteKey>
         if (networkStatus) {
             GlobalScope.launch(Dispatchers.IO) {
                 localList = noteDAO.display()
@@ -149,6 +153,65 @@ class DatabaseService(context: Context) {
         var database = Database()
         database.deletePermanent(key)
     }
+
+    fun addLabelToDB(inputLabel: String) {
+        var database = Database()
+        database.addLabelToDB(inputLabel)
+    }
+
+    fun deleteLabel(key: String) {
+        var database = Database()
+        database.deleteLabelFromDB(key)
+    }
+
+    fun updateLabel(inputLabel: String, updatedLabel: String) {
+        var database = Database()
+        database.updateLabel(inputLabel, updatedLabel)
+    }
+
+    fun loadPage(key: String, offset: Int, title: String, content: String) {
+        val cal = Calendar.getInstance()
+        var date = cal.time.toString()
+        var uid = FirebaseAuth.getInstance().currentUser!!.uid
+        val dbref = FirebaseDatabase.getInstance().getReference("user").child(uid).child("Notes")
+        getData(key).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    CoroutineScope(Dispatchers.Default).launch {
+                        for (noteSnapshot in snapshot.children) {
+                            val note = noteSnapshot.getValue(Notes::class.java)
+                            val noteInfo =
+                                NoteKey(null, fid, note?.title.toString(), note?.content, date)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                noteDAO.insert(noteInfo)
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })
+
+        noteDAO.getPagedNotes(10, offset)
+    }
+
+
+    private fun getData(key: String): Query {
+        lateinit var dbref: DatabaseReference
+        var uid = FirebaseAuth.getInstance().currentUser!!.uid
+        dbref = FirebaseDatabase.getInstance().getReference("user").child(uid).child("Notes")
+
+        if (key == " ") {
+            return dbref.orderByKey().limitToFirst(8)
+        } else {
+            //dbref.equalTo("randomlabel","labelId")
+            return dbref.orderByKey().startAfter(key).limitToFirst(8)
+        }
+    }
+
 
 }
 

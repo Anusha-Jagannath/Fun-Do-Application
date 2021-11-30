@@ -12,7 +12,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class NotesAdapter(private var noteList: ArrayList<Notes>) :
-    RecyclerView.Adapter<NotesAdapter.MyViewHolder>(),Filterable {
+    RecyclerView.Adapter<NotesAdapter.MyViewHolder>(),Filterable{
 
     private lateinit var mListener: onItemClickListener
 
@@ -45,6 +45,18 @@ class NotesAdapter(private var noteList: ArrayList<Notes>) :
         val currentItem = noteList[position]
         holder.title.text = currentItem.title
         holder.inputContent.text = currentItem.content
+        holder.inputDate.text = currentItem.reminderDate
+//        if(currentItem.label1 == null || currentItem.label2 == null)
+//            holder.inputLabel.text = ""
+//
+//        if(currentItem.label1 == null || currentItem.label2 != null)
+//            holder.inputLabel.text = currentItem.label2
+//
+//        if(currentItem.label1 != null || currentItem.label2 == null)
+//            holder.inputLabel.text = currentItem.label1
+//
+//        if(currentItem.label1 != null || currentItem.label2 != null)
+//            holder.inputLabel.text = currentItem.label1 +" "+currentItem.label2
 
     }
 
@@ -58,6 +70,7 @@ class NotesAdapter(private var noteList: ArrayList<Notes>) :
 
         val title: TextView = itemView.findViewById(R.id.inputTypeTitle)
         val inputContent: TextView = itemView.findViewById(R.id.inputTypeNote)
+        val inputDate: TextView = itemView.findViewById(R.id.inputTypeDate)
 
         init {
             itemView.setOnClickListener {
@@ -66,7 +79,7 @@ class NotesAdapter(private var noteList: ArrayList<Notes>) :
         }
     }
 
-    //night
+    //filter
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
@@ -98,9 +111,7 @@ class NotesAdapter(private var noteList: ArrayList<Notes>) :
 
         }
     }
-//night
-
-
+//filter
 
 
 }

@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -21,8 +22,12 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.fundo.R
 import com.example.fundo.home.*
+import com.example.fundo.label.AddLabel
+import com.example.fundo.label.ArchivedNotes
+import com.example.fundo.label.ReminderNotes
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -32,8 +37,10 @@ import kotlinx.android.synthetic.main.activity_home_new.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.content_main_new.*
 import com.example.fundo.service.AuthenticationService
+import com.example.fundo.service.Database
 import com.example.fundo.service.Storage
 import com.example.fundo.viewmodels.HomeViewModel
+import kotlinx.android.synthetic.main.activity_grid.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -48,11 +55,19 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
     private lateinit var homeViewModel: HomeViewModel
     private var menu: Menu? = null
     lateinit var addNoteButton: FloatingActionButton
+
     //grid image
     lateinit var gridImageView: ImageView
 
 
-    //lateinit var adapter: NotesAdapter                                            //added night
+    //lateinit var adapter: NotesAdapter
+    //
+    // added night
+    //lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private var key: String = " "
+    lateinit var database: Database
+    lateinit var adapter: NotesAdapter
+    var isLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,18 +103,138 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
             var intent = Intent(this, HomeGridActivity::class.java)
             startActivity(intent)
         }
+        //swipeRefreshLayout = findViewById(R.id.swipe)
         noteRecyclerView = findViewById(R.id.noteList)
         noteRecyclerView.layoutManager = LinearLayoutManager(this)
         noteRecyclerView.setHasFixedSize(true)
         noteArrayList = arrayListOf<Notes>()
         tempArrayList = arrayListOf<Notes>()
-
-        //added night-------------------------
         //adapter = NotesAdapter(noteArrayList)
         //noteRecyclerView.adapter = adapter
-        //end---------------------------
+        //adapter = NotesAdapter(tempArrayList)
+        //noteRecyclerView.adapter = adapter
+        database = Database()
+        loadData()
+        //getNotesAllData()
+        noteRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-        getNotesData()
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                Log.i("grid","increment page test")
+                val visibleItemCount = (noteRecyclerView.layoutManager as LinearLayoutManager).childCount
+                val lastVisibleItem =
+                    (noteRecyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+                Log.d("RECORD",visibleItemCount.toString())
+                Log.d("RECORD",lastVisibleItem.toString())
+                val total = adapter.itemCount
+                Log.d("TOTAL",total.toString())
+                if(total < lastVisibleItem+3) {
+                    if(!isLoading) {
+                        isLoading = true
+                        loadData()
+                    }
+                }
+
+
+
+            }
+        })
+
+
+    }
+
+
+
+
+    //added nw which helped me
+    private fun loadData() {
+        //swipeRefreshLayout.isRefreshing = true
+        progressID.visibility = View.VISIBLE
+        database.get(key).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (noteSnapshot in snapshot.children) {
+                        val notes = noteSnapshot.getValue(Notes::class.java)
+                        noteArrayList.add(notes!!)
+                        key = noteSnapshot.key.toString()
+                        if (key != null) {
+                            Log.d("key", key)
+                        }
+                    }
+
+
+                    Log.d("HOME", noteArrayList.toString())
+                    tempArrayList.addAll(noteArrayList)
+                    adapter = NotesAdapter(tempArrayList)
+                    noteRecyclerView.adapter = adapter
+
+                    adapter.notifyDataSetChanged()
+                    isLoading = false
+                    //swipeRefreshLayout.isRefreshing = false
+                    progressID.visibility = View.GONE
+
+                    adapter.setOnItemClickListener(object : NotesAdapter.onItemClickListener {
+                        override fun onItemClick(position: Int) {
+                            Toast.makeText(applicationContext, "clickinggg on $position", Toast.LENGTH_SHORT).show()
+                            var note = noteArrayList[position]
+                            var title = note.title.toString()
+                            var content = note.content.toString()
+                            var label1 = note.label1.toString()
+                            var label2 = note.label2.toString()
+                            Log.d("test", title)
+                            Log.d("test", content)
+                            Toast.makeText(applicationContext, "$title", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, "$content", Toast.LENGTH_SHORT)
+                                .show()
+                            var intent = Intent(this@HomeActivityNew, AddNotesActivity::class.java)
+                            intent.putExtra("title", title)
+                            intent.putExtra("content", content)
+                            intent.putExtra("label1", label1)
+                            intent.putExtra("label2", label2)
+                            startActivity(intent)
+
+                        }
+
+                    })
+
+
+                    //mulpa
+
+
+                }
+                //adapter.notifyDataSetChanged()
+                //isLoading = false
+                //swipeRefreshLayout.isRefreshing = false
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+    }
+
+
+
+
+    private fun getNotesAllData() {
+        lateinit var dbref: DatabaseReference
+        var uid = FirebaseAuth.getInstance().currentUser!!.uid
+        dbref = FirebaseDatabase.getInstance().getReference("user").child(uid).child("Notes")
+        dbref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (noteSnapshot in snapshot.children) {
+                        val note = noteSnapshot.getValue(Notes::class.java)
+                        noteArrayList.add(note!!)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -108,6 +243,7 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
         if (item.itemId == R.id.about) {
             Toast.makeText(applicationContext, "about clicked", Toast.LENGTH_SHORT).show()
+            gotoArchivedNotesPage()
         }
         if (item.itemId == R.id.contact) {
             Toast.makeText(applicationContext, "contact clicked", Toast.LENGTH_SHORT).show()
@@ -116,13 +252,41 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
         if (item.itemId == R.id.settings) {
             Toast.makeText(applicationContext, "settings clicked", Toast.LENGTH_SHORT).show()
+            gotoReminderPage()
+        }
+
+        if (item.itemId == R.id.addLabel) {
+            Toast.makeText(applicationContext, "add label clicked", Toast.LENGTH_SHORT).show()
+            gotoAddLabelPage()
+        }
+
+        if (item.itemId == R.id.endless) {
+            Toast.makeText(applicationContext, "add label clicked", Toast.LENGTH_SHORT).show()
+
         }
         drawerLayoutNew.closeDrawer(GravityCompat.START)
         return true
     }
 
+    
+
+    private fun gotoReminderPage() {
+        var intent = Intent(this,ReminderNotes::class.java)
+        startActivity(intent)
+    }
+
+    private fun gotoArchivedNotesPage() {
+       var intent = Intent(this,ArchivedNotes::class.java)
+        startActivity(intent)
+    }
+
+    private fun gotoAddLabelPage() {
+        var intent = Intent(this, AddLabel::class.java)
+        startActivity(intent)
+    }
+
     private fun gotoDeletePage() {
-        var intent = Intent(this,DeletedNotes::class.java)
+        var intent = Intent(this, DeletedNotes::class.java)
         startActivity(intent)
     }
 
@@ -135,6 +299,7 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
             override fun onQueryTextSubmit(query: String?): Boolean {
                 TODO("Not yet implemented")
             }
+
             override fun onQueryTextChange(newText: String?): Boolean {
                 Toast.makeText(applicationContext, "$newText", Toast.LENGTH_SHORT).show()
                 //adapter.filter.filter(newText)
@@ -243,7 +408,9 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
                     for (noteSnapshot in snapshot.children) {
                         val notes = noteSnapshot.getValue(Notes::class.java)
                         noteArrayList.add(notes!!)
+
                     }
+                    Log.d("HOME", noteArrayList.toString())
                     tempArrayList.addAll(noteArrayList)
                     var adapter = NotesAdapter(tempArrayList)
                     noteRecyclerView.adapter = adapter
@@ -257,6 +424,8 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
                             var note = noteArrayList[position]
                             var title = note.title.toString()
                             var content = note.content.toString()
+                            var label1 = note.label1.toString()
+                            var label2 = note.label2.toString()
                             Log.d("test", title)
                             Log.d("test", content)
                             Toast.makeText(applicationContext, "$title", Toast.LENGTH_SHORT).show()
@@ -265,6 +434,8 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
                             var intent = Intent(this@HomeActivityNew, AddNotesActivity::class.java)
                             intent.putExtra("title", title)
                             intent.putExtra("content", content)
+                            intent.putExtra("label1", label1)
+                            intent.putExtra("label2", label2)
                             startActivity(intent)
 
                         }

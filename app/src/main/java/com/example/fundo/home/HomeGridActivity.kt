@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fundo.R
+import com.example.fundo.service.Database
 import com.example.fundo.ui.HomeActivityNew
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -23,6 +24,12 @@ class HomeGridActivity : AppCompatActivity() {
     var isLoading = false
     val limit = 10
     lateinit var adapter: NotesAdapter
+
+    //added nw
+    lateinit var database:Database
+    //added nw
+    lateinit var key: String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +46,12 @@ class HomeGridActivity : AppCompatActivity() {
         noteArrayList = arrayListOf<Notes>()
         adapter = NotesAdapter(noteArrayList)
         noteRecyclerView.adapter = adapter
+
+        //added nw
+        key = " "
+        database = Database()
+        loadData() //added nw
+
         adapter.setOnItemClickListener(object : NotesAdapter.onItemClickListener {
             override fun onItemClick(position: Int) {
                 Toast.makeText(
@@ -49,7 +62,6 @@ class HomeGridActivity : AppCompatActivity() {
             }
 
         })
-        loadFirstPage()
         noteRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -57,24 +69,46 @@ class HomeGridActivity : AppCompatActivity() {
                     val visibleItemCount =
                         (noteRecyclerView.layoutManager as GridLayoutManager).childCount
                     val pastVisibleItem =
-                        (noteRecyclerView.layoutManager as GridLayoutManager).findFirstCompletelyVisibleItemPosition()
+                        (noteRecyclerView.layoutManager as GridLayoutManager).findLastCompletelyVisibleItemPosition()
                     val total = adapter.itemCount
-                    if(!isLoading) {
-                        Log.d("grid","test")
-                        isLoading = true
-                        if(total < pastVisibleItem + visibleItemCount) {
-                            Log.i("grid","increment page")
-                            page++
-                            loadFirstPage()
+                    if(total < pastVisibleItem + 3) {
+                        if(!isLoading) {
+                            isLoading = true
+                            loadData()
+                            //getNotesData()
                         }
                     }
             }
         })
     }
 
+    //added nw
+    private fun loadData() {
+        swipeRefresh.isRefreshing = true
+        database.get(key).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (noteSnapshot in snapshot.children) {
+                        val notes = noteSnapshot.getValue(Notes::class.java)
+                        noteArrayList.add(notes!!)
+                        key = noteSnapshot.key.toString()
+                        if (key != null) {
+                            Log.d("key",key)
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged()
+                isLoading = false
+                swipeRefresh.isRefreshing = false
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+    }
+
     private fun loadFirstPage() {
-        //swipeRefresh.isRefreshing = true
-        loadingProgressBar.visibility = View.VISIBLE
         val start = (page - 1) * limit
         val end = page * limit
         Log.i("Grid","Start: $start $end")
@@ -88,75 +122,57 @@ class HomeGridActivity : AppCompatActivity() {
                         for (noteSnapshot in snapshot.children) {
                             val notes = noteSnapshot.getValue(Notes::class.java)
                             noteArrayList.add(notes!!)
+
                         }
                     }
                     adapter.notifyDataSetChanged()
                     isLoading = false
-                    //swipeRefresh.isRefreshing = false
 
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    //swipeRefresh.isRefreshing = false
+
                 }
             })
 
         }
-
-
-//        Handler().postDelayed({
-//            if (::adapter.isInitialized) {
-//                adapter.notifyDataSetChanged()
-//            } else {
-//                adapter = Adapter(noteArrayList)
-//                noteRecyclerView.adapter = adapter
-//            }
-//            isLoading = false
-//            //loadingProgressBar.visibility = View.GONE
-//        }, 5000)
-
     }
 
 
-//    private fun getNotesData() {
-//
-//        lateinit var dbref: DatabaseReference
-//        var uid = FirebaseAuth.getInstance().currentUser!!.uid
-//        dbref = FirebaseDatabase.getInstance().getReference("user").child(uid).child("Notes")
-//
-//        dbref.addValueEventListener(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//
-//                if (snapshot.exists()) {
-//                    for (noteSnapshot in snapshot.children) {
-//                        val notes = noteSnapshot.getValue(Notes::class.java)
-//                        noteArrayList.add(notes!!)
-//                    }
-//
-//
-//                    var adapter = Adapter(noteArrayList)
-//                    noteRecyclerView.adapter = adapter
-//                    adapter.setOnItemClickListener(object : Adapter.onItemClickListener {
-//                        override fun onItemClick(position: Int) {
-//                            Toast.makeText(
-//                                applicationContext,
-//                                "clicked on $position",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-//
-//                    })
-//
-//                }
-//
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//
-//            }
-//        })
-//
-//    }
+    private fun getNotesData() {
 
+        lateinit var dbref: DatabaseReference
+        var uid = FirebaseAuth.getInstance().currentUser!!.uid
+        dbref = FirebaseDatabase.getInstance().getReference("user").child(uid).child("Notes")
 
+        dbref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                if (snapshot.exists()) {
+                    for (noteSnapshot in snapshot.children) {
+                        val notes = noteSnapshot.getValue(Notes::class.java)
+                        noteArrayList.add(notes!!)
+                    }
+                    var adapter = NotesAdapter(noteArrayList)
+                    noteRecyclerView.adapter = adapter
+                    adapter.setOnItemClickListener(object : NotesAdapter.onItemClickListener {
+                        override fun onItemClick(position: Int) {
+                            Toast.makeText(
+                                applicationContext,
+                                "clicked on $position",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                    })
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+
+    }
 }
