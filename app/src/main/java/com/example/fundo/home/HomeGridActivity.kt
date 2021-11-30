@@ -141,19 +141,6 @@ class HomeGridActivity : AppCompatActivity() {
             })
 
         }
-
-
-//        Handler().postDelayed({
-//            if (::adapter.isInitialized) {
-//                adapter.notifyDataSetChanged()
-//            } else {
-//                adapter = Adapter(noteArrayList)
-//                noteRecyclerView.adapter = adapter
-//            }
-//            isLoading = false
-//            //loadingProgressBar.visibility = View.GONE
-//        }, 5000)
-
     }
 
 
@@ -196,6 +183,4 @@ class HomeGridActivity : AppCompatActivity() {
         })
 
     }
-
-
 }

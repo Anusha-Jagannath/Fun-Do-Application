@@ -30,8 +30,6 @@ class AddLabel : AppCompatActivity() {
     private lateinit var labelRecyclerView: RecyclerView
     private lateinit var labelArrayList: ArrayList<Labels>
 
-    //lateinit var adapter: LabelsAdapter //added
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_label)
@@ -42,9 +40,6 @@ class AddLabel : AppCompatActivity() {
         labelRecyclerView.layoutManager = LinearLayoutManager(this)
         labelRecyclerView.setHasFixedSize(true)
         labelArrayList = arrayListOf<Labels>()
-
-        //adapter = LabelsAdapter(labelArrayList) //added nw
-        //labelRecyclerView.adapter = adapter
 
         backHome.setOnClickListener {
             Toast.makeText(this, "back button clicked", Toast.LENGTH_SHORT).show()

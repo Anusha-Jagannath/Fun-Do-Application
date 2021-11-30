@@ -55,6 +55,4 @@ class LabelsAdapter(private var labelList: ArrayList<Labels>) :
 
         }
     }
-
-
 }
