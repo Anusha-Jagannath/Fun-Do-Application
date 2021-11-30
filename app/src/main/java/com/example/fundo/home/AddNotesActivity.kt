@@ -269,77 +269,77 @@ class AddNotesActivity : AppCompatActivity() {
             .enqueue(mRequest)
     }
 //here
-//    @RequiresApi(Build.VERSION_CODES.M)
-//    private fun scheduleNotification() {
-//        Log.d("D", "inside scheudle channel")
-//        val intent = Intent(applicationContext, Notification::class.java)
-//        val title = addtitle.text.toString()
-//        val content = addContent.text.toString()
-//        intent.putExtra(titleExtra, title)
-//        intent.putExtra(messageExtra, content)
-//        val pendingIntent = PendingIntent.getBroadcast(
-//            applicationContext,
-//            notificationID,
-//            intent,
-//            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-//        )
-//        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//        val calendar = Calendar.getInstance()
-//        calendar.set(YEAR, MM, DAY, HOUR, MIN)
-//        val time = calendar.timeInMillis
-//
-//        Log.d("MIN",MIN.toString())
-//        Log.d("HOUR",HOUR.toString())
-//
-//        Log.d("DAY",DAY.toString())
-//        Log.d("MONTH",MM.toString())
-//        Log.d("YEAR",YEAR.toString())
-//        Log.d("TIMEINMILLI",time.toString())
-//
-//
-//        alarmManager.setExactAndAllowWhileIdle(
-//            AlarmManager.RTC_WAKEUP, time, pendingIntent
-//        )
-//        Log.d("T", "trigger")
-//        showAlert(time, title, content)
-//    }
-//
-//
-//    private fun showAlert(time: Long, title: String, message: String) {
-//        val date = Date(time)
-//        val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
-//        val timeFormat = android.text.format.DateFormat.getTimeFormat(applicationContext)
-//        AlertDialog.Builder(this)
-//            .setTitle("Notification scheduled").setMessage(
-//                "Title:" + title + "Message" + message + "At: " + dateFormat.format(date) + " " + timeFormat.format(
-//                    time
-//                )
-//            )
-//            .setPositiveButton("Okay", null)
-//            .show()
-//
-//
-//    }
-//
-//    private fun getTime(): Long {
-//        val calendar = Calendar.getInstance()
-//        calendar.set(YEAR, MM, DAY, HOUR, MIN)
-//        return calendar.timeInMillis
-//    }
-//
-//    @RequiresApi(Build.VERSION_CODES.O)
-//    private fun createNotificationChannel() {
-//        Log.d("C", "inside notification channel")
-//        val name = "Notif Channel"
-//        val desc = "A description of the channel"
-//        val importance = NotificationManager.IMPORTANCE_DEFAULT
-//        val channel = NotificationChannel(channelID, name, importance)
-//        channel.description = desc
-//        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-//        notificationManager.createNotificationChannel(channel)
-//
-//
-//    }
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun scheduleNotification() {
+        Log.d("D", "inside scheudle channel")
+        val intent = Intent(applicationContext, Notification::class.java)
+        val title = addtitle.text.toString()
+        val content = addContent.text.toString()
+        intent.putExtra(titleExtra, title)
+        intent.putExtra(messageExtra, content)
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            notificationID,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val calendar = Calendar.getInstance()
+        calendar.set(YEAR, MM, DAY, HOUR, MIN)
+        val time = calendar.timeInMillis
+
+        Log.d("MIN",MIN.toString())
+        Log.d("HOUR",HOUR.toString())
+
+        Log.d("DAY",DAY.toString())
+        Log.d("MONTH",MM.toString())
+        Log.d("YEAR",YEAR.toString())
+        Log.d("TIMEINMILLI",time.toString())
+
+
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP, time, pendingIntent
+        )
+        Log.d("T", "trigger")
+        showAlert(time, title, content)
+    }
+
+
+    private fun showAlert(time: Long, title: String, message: String) {
+        val date = Date(time)
+        val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
+        val timeFormat = android.text.format.DateFormat.getTimeFormat(applicationContext)
+        AlertDialog.Builder(this)
+            .setTitle("Notification scheduled").setMessage(
+                "Title:" + title + "Message" + message + "At: " + dateFormat.format(date) + " " + timeFormat.format(
+                    time
+                )
+            )
+            .setPositiveButton("Okay", null)
+            .show()
+
+
+    }
+
+    private fun getTime(): Long {
+        val calendar = Calendar.getInstance()
+        calendar.set(YEAR, MM, DAY, HOUR, MIN)
+        return calendar.timeInMillis
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel() {
+        Log.d("C", "inside notification channel")
+        val name = "Notif Channel"
+        val desc = "A description of the channel"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(channelID, name, importance)
+        channel.description = desc
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+
+
+    }
 //here
     private fun gotoHomePage() {
         var intent = Intent(this, HomeActivityNew::class.java)

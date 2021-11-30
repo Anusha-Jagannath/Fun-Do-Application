@@ -95,8 +95,6 @@ class HomeGridActivity : AppCompatActivity() {
                         if (key != null) {
                             Log.d("key",key)
                         }
-                        //key?.let { Log.d("key", it) }
-
                     }
                 }
                 adapter.notifyDataSetChanged()
@@ -111,8 +109,6 @@ class HomeGridActivity : AppCompatActivity() {
     }
 
     private fun loadFirstPage() {
-        //swipeRefresh.isRefreshing = true
-        //loadingProgressBar.visibility = View.VISIBLE
         val start = (page - 1) * limit
         val end = page * limit
         Log.i("Grid","Start: $start $end")
@@ -131,12 +127,11 @@ class HomeGridActivity : AppCompatActivity() {
                     }
                     adapter.notifyDataSetChanged()
                     isLoading = false
-                    //swipeRefresh.isRefreshing = false
 
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    //swipeRefresh.isRefreshing = false
+
                 }
             })
 
@@ -158,8 +153,6 @@ class HomeGridActivity : AppCompatActivity() {
                         val notes = noteSnapshot.getValue(Notes::class.java)
                         noteArrayList.add(notes!!)
                     }
-
-
                     var adapter = NotesAdapter(noteArrayList)
                     noteRecyclerView.adapter = adapter
                     adapter.setOnItemClickListener(object : NotesAdapter.onItemClickListener {
@@ -174,7 +167,6 @@ class HomeGridActivity : AppCompatActivity() {
                     })
 
                 }
-
             }
 
             override fun onCancelled(error: DatabaseError) {
