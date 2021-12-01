@@ -9,10 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.work.*
 import com.example.fundo.*
@@ -26,6 +23,7 @@ import kotlinx.android.synthetic.main.label_dialog.view.*
 import com.example.fundo.service.Database
 import com.example.fundo.service.DatabaseHelper
 import com.example.fundo.service.DatabaseService
+import kotlinx.android.synthetic.main.activity_add_notes.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -47,6 +45,10 @@ class AddNotesActivity : AppCompatActivity() {
     private lateinit var date: String
     private lateinit var time: String
     private lateinit var reminder: String
+    private lateinit var workCheckbox: CheckBox
+    private lateinit var musicCheckBox: CheckBox
+    private lateinit var generalCheckBox: CheckBox
+    private lateinit var labelButton: Button
     var HOUR: Int = 0
     var MIN: Int = 0
     var YEAR: Int = 0
@@ -55,14 +57,12 @@ class AddNotesActivity : AppCompatActivity() {
     var timeFormat = SimpleDateFormat("hh:mm:a", Locale.US)
     var count = 0
 
-    //@RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_notes)
 
         addtitle = findViewById(R.id.inputTitle)
         addContent = findViewById(R.id.inputNote)
-
         saveNotesButton = findViewById(R.id.saveNoteBtn)
         backButton = findViewById(R.id.backButton)
         updateNoteButton = findViewById(R.id.updateBtn)
@@ -71,6 +71,10 @@ class AddNotesActivity : AppCompatActivity() {
         inputDate = findViewById(R.id.date)
         inputTime = findViewById(R.id.time)
         remindButton = findViewById(R.id.setReminder)
+        workCheckbox = findViewById(R.id.work)
+        musicCheckBox = findViewById(R.id.music)
+        generalCheckBox = findViewById(R.id.general)
+        labelButton = findViewById(R.id.buttonLabel)
 
         var title = intent.getStringExtra("title")
         var content = intent.getStringExtra("content")
@@ -79,7 +83,6 @@ class AddNotesActivity : AppCompatActivity() {
 
         addtitle.setText(title)
         addContent.setText(content)
-
         var helper = DatabaseHelper(applicationContext)
 
         saveNotesButton.setOnClickListener {
@@ -103,6 +106,23 @@ class AddNotesActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             Toast.makeText(this, "back button clicked", Toast.LENGTH_SHORT).show()
             gotoHomePage()
+        }
+        buttonLabel.setOnClickListener {
+            var checkboxInput = ""
+            if(workCheckbox.isChecked) {
+                checkboxInput += "work"
+            }
+            if(musicCheckBox.isChecked) {
+                checkboxInput += " music"
+            }
+            if(generalCheckBox.isChecked) {
+                checkboxInput += " general"
+            }
+            Toast.makeText(this,"$checkboxInput",Toast.LENGTH_SHORT).show()
+            var note = Notes(title,content, null,null,null,null,checkboxInput)
+            var database = Database()
+            database.saveNotesWithLabel(note)
+
         }
 
         inputDate.setOnClickListener {
@@ -155,15 +175,6 @@ class AddNotesActivity : AppCompatActivity() {
             Toast.makeText(this, "reminder set", Toast.LENGTH_SHORT).show()
             database.saveNotes(note)
             Toast.makeText(this, "added in realtime", Toast.LENGTH_SHORT).show()
-            Log.d("TIMER", YEAR.toString())
-            Log.d("TIMER", MM.toString())
-            Log.d("TIMER", DAY.toString())
-
-            Log.d("TIMER", HOUR.toString())
-            Log.d("TIMER", MIN.toString())
-            //scheduleNotification()
-            //myWorkManager()
-
         }
 
         updateNoteButton.setOnClickListener {
@@ -268,79 +279,6 @@ class AddNotesActivity : AppCompatActivity() {
         WorkManager.getInstance(this)
             .enqueue(mRequest)
     }
-//here
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun scheduleNotification() {
-        Log.d("D", "inside scheudle channel")
-        val intent = Intent(applicationContext, Notification::class.java)
-        val title = addtitle.text.toString()
-        val content = addContent.text.toString()
-        intent.putExtra(titleExtra, title)
-        intent.putExtra(messageExtra, content)
-        val pendingIntent = PendingIntent.getBroadcast(
-            applicationContext,
-            notificationID,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val calendar = Calendar.getInstance()
-        calendar.set(YEAR, MM, DAY, HOUR, MIN)
-        val time = calendar.timeInMillis
-
-        Log.d("MIN",MIN.toString())
-        Log.d("HOUR",HOUR.toString())
-
-        Log.d("DAY",DAY.toString())
-        Log.d("MONTH",MM.toString())
-        Log.d("YEAR",YEAR.toString())
-        Log.d("TIMEINMILLI",time.toString())
-
-
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP, time, pendingIntent
-        )
-        Log.d("T", "trigger")
-        showAlert(time, title, content)
-    }
-
-
-    private fun showAlert(time: Long, title: String, message: String) {
-        val date = Date(time)
-        val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
-        val timeFormat = android.text.format.DateFormat.getTimeFormat(applicationContext)
-        AlertDialog.Builder(this)
-            .setTitle("Notification scheduled").setMessage(
-                "Title:" + title + "Message" + message + "At: " + dateFormat.format(date) + " " + timeFormat.format(
-                    time
-                )
-            )
-            .setPositiveButton("Okay", null)
-            .show()
-
-
-    }
-
-    private fun getTime(): Long {
-        val calendar = Calendar.getInstance()
-        calendar.set(YEAR, MM, DAY, HOUR, MIN)
-        return calendar.timeInMillis
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel() {
-        Log.d("C", "inside notification channel")
-        val name = "Notif Channel"
-        val desc = "A description of the channel"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(channelID, name, importance)
-        channel.description = desc
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
-
-
-    }
-//here
     private fun gotoHomePage() {
         var intent = Intent(this, HomeActivityNew::class.java)
         startActivity(intent)

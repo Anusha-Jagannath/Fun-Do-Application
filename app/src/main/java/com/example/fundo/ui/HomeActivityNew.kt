@@ -55,15 +55,7 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
     private lateinit var homeViewModel: HomeViewModel
     private var menu: Menu? = null
     lateinit var addNoteButton: FloatingActionButton
-
-    //grid image
     lateinit var gridImageView: ImageView
-
-
-    //lateinit var adapter: NotesAdapter
-    //
-    // added night
-    //lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var key: String = " "
     lateinit var database: Database
     lateinit var adapter: NotesAdapter
@@ -103,7 +95,6 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
             var intent = Intent(this, HomeGridActivity::class.java)
             startActivity(intent)
         }
-        //swipeRefreshLayout = findViewById(R.id.swipe)
         noteRecyclerView = findViewById(R.id.noteList)
         noteRecyclerView.layoutManager = LinearLayoutManager(this)
         noteRecyclerView.setHasFixedSize(true)
@@ -115,7 +106,6 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
         //noteRecyclerView.adapter = adapter
         database = Database()
         loadData()
-        //getNotesAllData()
         noteRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -134,20 +124,13 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
                     }
                 }
 
-
-
             }
         })
 
-
     }
 
-
-
-
-    //added nw which helped me
+    //added code to load data
     private fun loadData() {
-        //swipeRefreshLayout.isRefreshing = true
         progressID.visibility = View.VISIBLE
         database.get(key).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -169,7 +152,6 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
                     adapter.notifyDataSetChanged()
                     isLoading = false
-                    //swipeRefreshLayout.isRefreshing = false
                     progressID.visibility = View.GONE
 
                     adapter.setOnItemClickListener(object : NotesAdapter.onItemClickListener {
@@ -195,10 +177,6 @@ class HomeActivityNew : AppCompatActivity(), NavigationView.OnNavigationItemSele
                         }
 
                     })
-
-
-                    //mulpa
-
 
                 }
                 //adapter.notifyDataSetChanged()

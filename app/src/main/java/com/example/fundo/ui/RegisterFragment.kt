@@ -85,11 +85,6 @@ class RegisterFragment : Fragment(R.layout.registerfragment) {
                     UserDatabase.getInstance(this@RegisterFragment).userDao().insert(userInfo)
                 }
                 Toast.makeText(context,"data added to sqlite room",Toast.LENGTH_SHORT).show()
-
-
-
-
-
             }
 
         }
@@ -98,10 +93,7 @@ class RegisterFragment : Fragment(R.layout.registerfragment) {
             Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show()
             sharedViewModel.setGotoLoginPageStatus(true)
 
-
         }
-
-
         return view
     }
 

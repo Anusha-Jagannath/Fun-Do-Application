@@ -264,5 +264,22 @@ class Database {
             }
     }
 
+    fun saveNotesWithLabel(notes: Notes) {
+        var first = notes.title
+        var second = notes.content
+        var key = first + second
+        var uid = FirebaseAuth.getInstance().currentUser!!.uid
+        FirebaseDatabase.getInstance().getReference("user")
+            .child(uid).child("Notes").child(key)
+            .setValue(notes).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Log.d("Database", "note successfully added")
+                    Log.d("test", key)
+                }
+            }
+    }
+
+
+
 
 }

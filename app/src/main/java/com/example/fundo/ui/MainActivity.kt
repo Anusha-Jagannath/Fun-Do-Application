@@ -133,9 +133,4 @@ open class MainActivity : AppCompatActivity(){
         Log.i("MainActivity","App status : on destroy")
     }
 
-
-
-
-
-
 }

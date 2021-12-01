@@ -20,7 +20,7 @@ class DeletedNotes : AppCompatActivity() {
     private lateinit var deletedRecyclerView: RecyclerView
     private lateinit var noteArrayList: ArrayList<Notes>
     lateinit var backButton: ImageView
-    lateinit var adapter: NotesAdapter //added
+    lateinit var adapter: NotesAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_deleted_notes)
@@ -29,7 +29,7 @@ class DeletedNotes : AppCompatActivity() {
         deletedRecyclerView.setHasFixedSize(true)
         noteArrayList = arrayListOf<Notes>()
 
-        adapter = NotesAdapter(noteArrayList) //added
+        adapter = NotesAdapter(noteArrayList)
         deletedRecyclerView.adapter = adapter
 
         backButton = findViewById(R.id.backImageView)
@@ -74,7 +74,7 @@ class DeletedNotes : AppCompatActivity() {
 
                 }
 
-                adapter.notifyDataSetChanged() //added
+                adapter.notifyDataSetChanged()
 
             }
 

@@ -105,28 +105,6 @@
         app:layout_constraintStart_toEndOf="@+id/noAccount"
         app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/imageView"-->
-<!--        android:layout_width="50dp"-->
-<!--        android:layout_height="50dp"-->
-<!--        android:layout_marginStart="128dp"-->
-<!--        android:layout_marginTop="60dp"-->
-<!--        app:layout_constraintEnd_toStartOf="@+id/facebookbtn"-->
-<!--        app:layout_constraintHorizontal_bias="0.0"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/noAccount"-->
-<!--        app:srcCompat="@drawable/google" />-->
-
-<!--    <ImageView-->
-<!--        android:id="@+id/facebookbtn"-->
-<!--        android:layout_width="97dp"-->
-<!--        android:layout_height="77dp"-->
-<!--        android:layout_marginTop="40dp"-->
-<!--        android:layout_marginEnd="84dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/textViewSignUp"-->
-<!--        app:srcCompat="@drawable/facebook" />-->
-
     <ImageView
         android:id="@+id/facebookbtn"
         android:layout_width="97dp"

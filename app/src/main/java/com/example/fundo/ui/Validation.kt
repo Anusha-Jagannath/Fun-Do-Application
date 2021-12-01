@@ -78,6 +78,4 @@ object Validation {
         bundle.putString("email", newUser.email)
         return bundle
     }
-
-
 }

@@ -33,20 +33,12 @@ class ProfileFragment : Fragment(R.layout.profilefragment) {
             requireActivity(),
             SharedViewModelFactory()
         )[SharedViewModel::class.java]
-
-
         val args = this.arguments
-//        val profileData = args?.get("name").toString()
-//        profile.text = "Welcome $profileData"
         val email = args?.get("email")
-        // var name = arguments?.get("name").toString()
         Log.d("Profile fragment", email.toString())
         profile.text = email.toString()
-
         logout = view.findViewById(R.id.logoutButton)
         logout.setOnClickListener {
-            // FirebaseAuth.getInstance().signOut()
-
             AuthenticationService().logOut()
             Toast.makeText(context, "logout success", Toast.LENGTH_SHORT).show()
             sharedViewModel.setGotoLoginPageStatus(true)
@@ -54,6 +46,4 @@ class ProfileFragment : Fragment(R.layout.profilefragment) {
         }
         return view
     }
-
-
 }

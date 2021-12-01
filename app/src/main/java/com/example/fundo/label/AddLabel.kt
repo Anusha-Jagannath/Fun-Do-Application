@@ -56,7 +56,6 @@ class AddLabel : AppCompatActivity() {
         getLabels()
     }
 
-
     private fun goToHomePage() {
         var intent = Intent(this, HomeActivityNew::class.java)
         startActivity(intent)

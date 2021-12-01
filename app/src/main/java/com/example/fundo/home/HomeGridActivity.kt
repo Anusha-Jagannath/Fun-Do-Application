@@ -24,12 +24,8 @@ class HomeGridActivity : AppCompatActivity() {
     var isLoading = false
     val limit = 10
     lateinit var adapter: NotesAdapter
-
-    //added nw
     lateinit var database:Database
-    //added nw
     lateinit var key: String
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +43,9 @@ class HomeGridActivity : AppCompatActivity() {
         adapter = NotesAdapter(noteArrayList)
         noteRecyclerView.adapter = adapter
 
-        //added nw
         key = " "
         database = Database()
-        loadData() //added nw
+        loadData()
 
         adapter.setOnItemClickListener(object : NotesAdapter.onItemClickListener {
             override fun onItemClick(position: Int) {
@@ -75,14 +70,13 @@ class HomeGridActivity : AppCompatActivity() {
                         if(!isLoading) {
                             isLoading = true
                             loadData()
-                            //getNotesData()
                         }
                     }
             }
         })
     }
 
-    //added nw
+    //added method to load data
     private fun loadData() {
         swipeRefresh.isRefreshing = true
         database.get(key).addValueEventListener(object : ValueEventListener {

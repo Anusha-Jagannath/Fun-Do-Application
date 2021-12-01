@@ -22,12 +22,12 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
     lateinit var inputEmail: EditText
     lateinit var password: EditText
     lateinit var login: Button
-    lateinit var loadingIcon:ProgressBar
-    lateinit var forgotPass:TextView
+    lateinit var loadingIcon: ProgressBar
+    lateinit var forgotPass: TextView
 
-   lateinit var facebookButton:ImageView
-  private lateinit var sharedViewModel: SharedViewModel
-  private lateinit var loginViewModel: LoginViewModel
+    lateinit var facebookButton: ImageView
+    private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,12 +42,13 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
         inputEmail = view.findViewById(R.id.emailID)
         password = view.findViewById(R.id.inputPassword)
         login = view.findViewById(R.id.buttonLogin)
-
-
         loadingIcon = view.findViewById(R.id.progressBar)
-
-        sharedViewModel = ViewModelProvider(requireActivity(), SharedViewModelFactory())[SharedViewModel::class.java]
-        loginViewModel = ViewModelProvider(this,LoginViewModelFactory())[LoginViewModel::class.java]
+        sharedViewModel = ViewModelProvider(
+            requireActivity(),
+            SharedViewModelFactory()
+        )[SharedViewModel::class.java]
+        loginViewModel =
+            ViewModelProvider(this, LoginViewModelFactory())[LoginViewModel::class.java]
         loginObservers()
 
         login.setOnClickListener {
@@ -58,30 +59,26 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
                 var password = password.editableText.toString()
                 var profileFragment = ProfileFragment()
                 val bundle = Bundle()
-                bundle.putString("email",email)
+                bundle.putString("email", email)
                 profileFragment.arguments = bundle
 
 
+                var status = loginViewModel.loginUser(email, password)
+                Toast.makeText(context, "Status : $status", Toast.LENGTH_SHORT).show()
 
-                var status = loginViewModel.loginUser(email,password)
-                Toast.makeText(context,"Status : $status",Toast.LENGTH_SHORT).show()
-
-                if(!status){
+                if (!status) {
 //                    var database = Database()
 //                    var fullName = database.getData()
                     //var fullName = loginViewModel.readData()
 
-                    var newUser = UserDetails("Anusha",email,true)
+                    var newUser = UserDetails("Anusha", email, true)
                     loginViewModel.setLoginStatus(newUser)
 
                     Toast.makeText(context, "login success", Toast.LENGTH_SHORT).show()
                     //sharedViewModel.setGotoHomePageStatus(newUser)
+                } else {
+                    Toast.makeText(context, "login unsucess", Toast.LENGTH_SHORT).show()
                 }
-                else {
-                    Toast.makeText(context,"login unsucess",Toast.LENGTH_SHORT).show()
-                }
-
-
 
 
             }
@@ -104,30 +101,23 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
         facebookButton.setOnClickListener {
 
             loadingIcon.visibility = View.VISIBLE
-            Toast.makeText(context,"facebook button clicked",Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "facebook button clicked", Toast.LENGTH_SHORT).show()
 
-            var intent = Intent(context,MainActivity2::class.java)
+            var intent = Intent(context, MainActivity2::class.java)
             startActivity(intent)
-
-
         }
+        return view
+    }
 
-
-            return view
+    private fun loginObservers() {
+        loginViewModel.loginStatus.observe(viewLifecycleOwner) {
+            if (it.loginStatus) {
+                Toast.makeText(requireContext(), "User logged", Toast.LENGTH_SHORT).show()
+                sharedViewModel.setGotoHomePageStatus(it)
+            } else {
+                Toast.makeText(requireContext(), "lggin failed", Toast.LENGTH_SHORT).show()
+            }
         }
-
-     private fun loginObservers() {
-         loginViewModel.loginStatus.observe(viewLifecycleOwner){
-             if(it.loginStatus) {
-                 Toast.makeText(requireContext(),"User logged",Toast.LENGTH_SHORT).show()
-                 sharedViewModel.setGotoHomePageStatus(it)
-             }
-             else {
-                 Toast.makeText(requireContext(),"lggin failed",Toast.LENGTH_SHORT).show()
-             }
-         }
-     }
-
-
+    }
 
 }

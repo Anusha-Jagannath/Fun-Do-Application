@@ -6,7 +6,8 @@ data class Notes(
     var date: String? = null,
     var label1: String? = null,
     var label2: String? = null,
-    var reminderDate: String? = null
+    var reminderDate: String? = null,
+    var labelName: String? = null
 ) {
 
 }
