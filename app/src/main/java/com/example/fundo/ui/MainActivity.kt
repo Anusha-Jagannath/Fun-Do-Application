@@ -18,7 +18,6 @@ open class MainActivity : AppCompatActivity(){
 
     lateinit var binding: ActivityMainBinding
     private lateinit var sharedViewModel: SharedViewModel
-
     lateinit var sharedPreference:SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -24,7 +24,6 @@
         android:layout_marginTop="500dp"
         android:backgroundTint="@color/purple_200"
         android:elevation="6dp"
-
         android:src="@drawable/add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.811"

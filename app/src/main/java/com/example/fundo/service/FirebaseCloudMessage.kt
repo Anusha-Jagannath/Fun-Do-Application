@@ -20,8 +20,6 @@ class FirebaseCloudMessage : FirebaseMessagingService() {
         if (remoteMessage.notification != null) {
             Log.d("Token", "Message Notification Body: " + remoteMessage.notification!!.body)
         }
-        Log.d("message","Message received")
-
+        Log.d("message", "Message received")
     }
-
 }

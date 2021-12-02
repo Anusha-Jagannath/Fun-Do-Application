@@ -40,7 +40,6 @@ object Validation {
     private fun showError(input: EditText, s: String) {
         input.setError(s)
         input.requestFocus()
-
     }
 
 
@@ -55,7 +54,6 @@ object Validation {
             showError(password, "password not valid")
             return false
         }
-
         return true
     }
 
@@ -68,7 +66,6 @@ object Validation {
             return false
         }
         return true
-
     }
 
     fun addInfoToBundle(newUser: UserDetails): Bundle {

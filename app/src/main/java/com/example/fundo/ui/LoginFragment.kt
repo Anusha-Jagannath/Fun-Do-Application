@@ -24,7 +24,6 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
     lateinit var login: Button
     lateinit var loadingIcon: ProgressBar
     lateinit var forgotPass: TextView
-
     lateinit var facebookButton: ImageView
     private lateinit var sharedViewModel: SharedViewModel
     private lateinit var loginViewModel: LoginViewModel
@@ -34,7 +33,6 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
         val view = inflater.inflate(R.layout.loginfragment, container, false)
         facebookButton = view.findViewById(R.id.facebookbtn)
         forgotPass = view.findViewById(R.id.forgotPassword)
@@ -61,26 +59,15 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
                 val bundle = Bundle()
                 bundle.putString("email", email)
                 profileFragment.arguments = bundle
-
-
                 var status = loginViewModel.loginUser(email, password)
                 Toast.makeText(context, "Status : $status", Toast.LENGTH_SHORT).show()
-
                 if (!status) {
-//                    var database = Database()
-//                    var fullName = database.getData()
-                    //var fullName = loginViewModel.readData()
-
                     var newUser = UserDetails("Anusha", email, true)
                     loginViewModel.setLoginStatus(newUser)
-
                     Toast.makeText(context, "login success", Toast.LENGTH_SHORT).show()
-                    //sharedViewModel.setGotoHomePageStatus(newUser)
                 } else {
                     Toast.makeText(context, "login unsucess", Toast.LENGTH_SHORT).show()
                 }
-
-
             }
         }
 
@@ -92,17 +79,13 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
 
 
         forgotPass.setOnClickListener {
-
             Toast.makeText(context, "forgot password clicked", Toast.LENGTH_SHORT).show()
             sharedViewModel.setGotoForgotPageStatus(true)
-
         }
 
         facebookButton.setOnClickListener {
-
             loadingIcon.visibility = View.VISIBLE
             Toast.makeText(context, "facebook button clicked", Toast.LENGTH_SHORT).show()
-
             var intent = Intent(context, MainActivity2::class.java)
             startActivity(intent)
         }
@@ -119,5 +102,4 @@ open class LoginFragment : Fragment(R.layout.loginfragment) {
             }
         }
     }
-
 }

@@ -17,6 +17,7 @@ import com.google.firebase.database.*
 import com.example.fundo.service.Database
 
 class DeletedNotes : AppCompatActivity() {
+
     private lateinit var deletedRecyclerView: RecyclerView
     private lateinit var noteArrayList: ArrayList<Notes>
     lateinit var backButton: ImageView
@@ -28,7 +29,6 @@ class DeletedNotes : AppCompatActivity() {
         deletedRecyclerView.layoutManager = LinearLayoutManager(this)
         deletedRecyclerView.setHasFixedSize(true)
         noteArrayList = arrayListOf<Notes>()
-
         adapter = NotesAdapter(noteArrayList)
         deletedRecyclerView.adapter = adapter
 
@@ -57,8 +57,6 @@ class DeletedNotes : AppCompatActivity() {
                         val notes = noteSnapshot.getValue(Notes::class.java)
                         noteArrayList.add(notes!!)
                     }
-                    //var adapter = NotesAdapter(noteArrayList)
-                   // deletedRecyclerView.adapter = adapter
                     adapter.setOnItemClickListener(object : NotesAdapter.onItemClickListener {
                         override fun onItemClick(position: Int) {
                             Toast.makeText(
@@ -111,6 +109,5 @@ class DeletedNotes : AppCompatActivity() {
                 database.saveArchivedNotes(notes)
             })
         alertDialog.show()
-
     }
 }

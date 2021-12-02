@@ -67,6 +67,5 @@ class ReminderNotes : AppCompatActivity() {
     private fun gotoHomePage() {
         var intent = Intent(this,HomeActivityNew::class.java)
         startActivity(intent)
-
     }
 }

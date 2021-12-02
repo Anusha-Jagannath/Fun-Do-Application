@@ -212,7 +212,10 @@ class DatabaseService(context: Context) {
         }
     }
 
-
+    fun linkNoteWithLabel(key: String, labelName: String) {
+        var database = Database()
+        database.linkNoteWithLabel(key, labelName)
+    }
 }
 
 

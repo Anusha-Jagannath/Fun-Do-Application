@@ -33,16 +33,13 @@ class RegisterFragment : Fragment(R.layout.registerfragment) {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
         val view = inflater.inflate(R.layout.registerfragment, container, false)
         loginText = view.findViewById<TextView>(R.id.alreadyHaveAccount)
         userName = view.findViewById(R.id.inputUserName)
         email = view.findViewById(R.id.inputEmail)
         password = view.findViewById(R.id.userPassword)
         confirmPassword = view.findViewById(R.id.confirmPassword)
-
         loading = view.findViewById(R.id.progressIcon)
-
         sharedViewModel = ViewModelProvider(
             requireActivity(),
             SharedViewModelFactory()
@@ -71,8 +68,6 @@ class RegisterFragment : Fragment(R.layout.registerfragment) {
                 if (!status) {
                     var newUser = UserDetails(name, emailId, true)
                     registerViewModel.addToDatabase(newUser)
-                    //var database = Database()
-                    //database.saveUserData(newUser)
                     registerViewModel.setRegisterStatus(newUser)
                     Toast.makeText(context, "regsiter success", Toast.LENGTH_SHORT).show()
                     sharedViewModel.setGotoHomePageStatus(newUser)

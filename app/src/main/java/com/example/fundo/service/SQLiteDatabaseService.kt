@@ -39,5 +39,4 @@ class SQLiteDatabaseService {
         db.update("NOTES",cv,"TITLE = ?", arrayOf(title))
         Log.d("update notes","notes updated to sqlite")
     }
-
 }

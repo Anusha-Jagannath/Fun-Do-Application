@@ -45,10 +45,7 @@ class AddNotesActivity : AppCompatActivity() {
     private lateinit var date: String
     private lateinit var time: String
     private lateinit var reminder: String
-    private lateinit var workCheckbox: CheckBox
-    private lateinit var musicCheckBox: CheckBox
-    private lateinit var generalCheckBox: CheckBox
-    private lateinit var labelButton: Button
+    private lateinit var labelIcon: ImageView
     var HOUR: Int = 0
     var MIN: Int = 0
     var YEAR: Int = 0
@@ -71,10 +68,7 @@ class AddNotesActivity : AppCompatActivity() {
         inputDate = findViewById(R.id.date)
         inputTime = findViewById(R.id.time)
         remindButton = findViewById(R.id.setReminder)
-        workCheckbox = findViewById(R.id.work)
-        musicCheckBox = findViewById(R.id.music)
-        generalCheckBox = findViewById(R.id.general)
-        labelButton = findViewById(R.id.buttonLabel)
+        labelIcon = findViewById(R.id.labelImage)
 
         var title = intent.getStringExtra("title")
         var content = intent.getStringExtra("content")
@@ -103,28 +97,18 @@ class AddNotesActivity : AppCompatActivity() {
             }
         }
 
+        labelIcon.setOnClickListener {
+            Toast.makeText(this,"label button clicked",Toast.LENGTH_SHORT).show()
+            var intent = Intent(this,NotesWithLabel::class.java)
+            var title = intent.putExtra("title",title)
+            var content = intent.putExtra("content",content)
+            startActivity(intent)
+        }
+
         backButton.setOnClickListener {
             Toast.makeText(this, "back button clicked", Toast.LENGTH_SHORT).show()
             gotoHomePage()
         }
-        buttonLabel.setOnClickListener {
-            var checkboxInput = ""
-            if(workCheckbox.isChecked) {
-                checkboxInput += "work"
-            }
-            if(musicCheckBox.isChecked) {
-                checkboxInput += " music"
-            }
-            if(generalCheckBox.isChecked) {
-                checkboxInput += " general"
-            }
-            Toast.makeText(this,"$checkboxInput",Toast.LENGTH_SHORT).show()
-            var note = Notes(title,content, null,null,null,null,checkboxInput)
-            var database = Database()
-            database.saveNotesWithLabel(note)
-
-        }
-
         inputDate.setOnClickListener {
             var cal = Calendar.getInstance()
             var datePicker = DatePickerDialog(
@@ -136,7 +120,6 @@ class AddNotesActivity : AppCompatActivity() {
                     YEAR = yy
                     MM = mm
                     DAY = dd
-
                 },
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
@@ -186,12 +169,10 @@ class AddNotesActivity : AppCompatActivity() {
             var newContent = addContent.text.toString()
             var databaseService = DatabaseService(this)
             databaseService.updateNotesToDB(key, newTitle, newContent, this)
-
             if (title != null) {
                 databaseService.updateDataToDB(title, newTitle, newContent, helper)
             }
             Toast.makeText(this, "updated in sqlite room", Toast.LENGTH_SHORT).show()
-
         }
 
         deleteNoteButton.setOnClickListener {
@@ -242,7 +223,6 @@ class AddNotesActivity : AppCompatActivity() {
                     Log.d("CM", count.toString())
                     database.saveLabelToNotesSecond(key, noteLabel, labelInput)
                 }
-
             }
             dialogView.dialogCancelBtn.setOnClickListener {
                 //dismiss the dialog

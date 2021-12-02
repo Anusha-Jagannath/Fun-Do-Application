@@ -61,9 +61,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //handling clicks
         nav_menu.setNavigationItemSelectedListener(this)
         addNoteButton = findViewById(R.id.createNoteBtn) //add note button
-        //logoutBtn = findViewById(R.id.logout)
         homeViewModel = ViewModelProvider(this, HomeViewModelFactory())[HomeViewModel::class.java]
-        //profileIcon = findViewById(R.id.profileIcon)
         preferences = getSharedPreferences("USER_INFO", Context.MODE_PRIVATE)
         val name = preferences.getString("NAME", "")
         val email = preferences.getString("EMAIL", "")

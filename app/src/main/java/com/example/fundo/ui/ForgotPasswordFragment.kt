@@ -59,7 +59,6 @@ class ForgotPasswordFragment : Fragment() {
         forgotpasswordViewModel.resetPasswordStatus.observe(viewLifecycleOwner) {
             if (it) {
                 Toast.makeText(requireContext(), "mail sent", Toast.LENGTH_SHORT).show()
-                //sharedViewModel.setGotoHomePageStatus(it)
             } else {
                 Toast.makeText(requireContext(), "mail not sent", Toast.LENGTH_SHORT).show()
             }

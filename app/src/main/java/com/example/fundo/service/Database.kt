@@ -196,9 +196,10 @@ class Database {
                 }
             }
     }
+
     fun addLabelToDB(labelInput: String) {
         var key = UUID.randomUUID().toString()
-        var label = Labels(key,labelInput)
+        var label = Labels(key, labelInput)
         var uid = FirebaseAuth.getInstance().currentUser!!.uid
         FirebaseDatabase.getInstance().getReference("Label")
             .child(uid).child(key)
@@ -279,7 +280,20 @@ class Database {
             }
     }
 
+    fun linkNoteWithLabel(key: String, labelInput: String) {
+        var uid = FirebaseAuth.getInstance().currentUser!!.uid
+        var labelKey = UUID.randomUUID().toString()
+        var label = Labels(labelKey, labelInput)
+        Log.d("KEY", labelKey)
+        Log.d("Label", label.labelId.toString())
 
-
-
+        FirebaseDatabase.getInstance().getReference("NoteLabelRelation")
+            .child(uid).child(key).child(labelKey)
+            .setValue(label).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Log.d("LABEL", "label successfully added")
+                    Log.d("test", key)
+                }
+            }
+    }
 }

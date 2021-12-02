@@ -48,8 +48,6 @@
         android:drawableLeft="@drawable/ic_baseline_email_24"
         android:drawablePadding="10dp"
         android:ems="10"
-
-
         android:hint="Email id"
         android:inputType="textPersonName"
         android:textSize="20sp"
