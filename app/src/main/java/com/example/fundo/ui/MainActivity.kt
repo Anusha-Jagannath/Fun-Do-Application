@@ -36,10 +36,8 @@ open class MainActivity : AppCompatActivity(){
             gotoLoginPage()
         }
         Log.i("MainActivity","App status : on create")
-
     }
-
-
+    
     private fun gotoLoginPage() {
         replaceFragment(LoginFragment())
     }

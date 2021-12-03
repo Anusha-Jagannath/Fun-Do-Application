@@ -34,42 +34,4 @@ class SharedViewModel : ViewModel() {
     fun setGotoForgotPageStatus(status: Boolean) {
         _gotoForgotPageStatus.value = status
     }
-
-//    fun registerUser(name: String, email: String, password: String): Boolean {
-//        var result = false
-//        AuthenticationService().register(email, password) { status, message ->
-//            Log.d("share", "$status")
-//            if (status) {
-//                result = true
-//            } else
-//                result = false
-//        }
-//        return result
-//    }
-
-//    fun loginUser(email: String, password: String) :Boolean{
-//        var result = false
-//        AuthenticationService().login(email, password) { status, message ->
-//            if (status) {
-//                result = true
-//            } else {
-//                result = false
-//            }
-//        }
-//        return result
-//
-//    }
-
-
-//    fun forgotPassword(email: String):Boolean {
-//        var result = false
-//        AuthenticationService().forgotPassword(email) { status, message ->
-//            if(status) {
-//                result = true
-//            }
-//
-//        }
-//        return result
-//    }
-
 }
