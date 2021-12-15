@@ -24,7 +24,7 @@ object Validation {
             showError(userName, context.getString(R.string.error_username_invalid))
             return false
         } else if (emailId.isEmpty() || !emailId.contains('@')) {
-            showError(email, "Your email id not valid")
+            showError(email, context.getString(R.string.error_email_invalid))
             return false
         } else if (pass.isEmpty() || pass.length < 7) {
             showError(password, "password length should be > 7")

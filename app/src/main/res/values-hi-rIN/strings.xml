@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">मज़ा दो</string>
     <string name="error_username_invalid">आपका उपयोगकर्ता नाम मान्य नहीं है</string>
+    <string name="error_email_invalid">आपका ईमेल मान्य नहीं है</string>
 </resources>
