@@ -40,5 +40,10 @@ class TestActivity : AppCompatActivity() {
                 }
             }
         }
+        postUserButton.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                userService.postUser("smita","smita@gmail.com","3214567896")
+            }
+        }
     }
 }

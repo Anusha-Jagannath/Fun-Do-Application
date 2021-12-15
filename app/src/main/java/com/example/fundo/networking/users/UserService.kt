@@ -21,7 +21,6 @@ class UserService {
     }
 
     suspend fun getUser(): ArrayList<FirebaseUserDetails> {
-        Log.d("TEST", "test")
         var userList: ArrayList<FirebaseUserDetails> = arrayListOf()
         val usersApi = retrofit.create(UsersApi::class.java)
         val userResponse = usersApi.getUser()
@@ -36,5 +35,15 @@ class UserService {
 
         }
         return userList
+    }
+
+    suspend fun postUser(name: String,email: String,phone: String) {
+        var user = FirebaseUserDetails(name,email,phone)
+        var userList: ArrayList<FirebaseUserDetails> = arrayListOf()
+        val usersApi = retrofit.create(UsersApi::class.java)
+        val userResponse = usersApi.postUser()
+        if (userResponse.documents != null) {
+            Log.d("record added",userList.toString())
+        }
     }
 }
