@@ -12,16 +12,29 @@ import kotlinx.coroutines.withContext
 
 class TestActivity : AppCompatActivity() {
     private lateinit var callApiButton: Button
+    private lateinit var callApiUserButton: Button
+    private lateinit var postUserButton: Button
     private lateinit var apiTextView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
         callApiButton = findViewById(R.id.callApiButton)
+        callApiUserButton = findViewById(R.id.callApiUser)
         apiTextView = findViewById(R.id.responseText)
+        postUserButton = findViewById(R.id.postButton)
         val userService = UserService()
         callApiButton.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 val users = userService.getUsers()
+                withContext(Dispatchers.Main) {
+                    apiTextView.text = users.toString()
+                }
+            }
+        }
+
+        callApiUserButton.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                val users = userService.getUser()
                 withContext(Dispatchers.Main) {
                     apiTextView.text = users.toString()
                 }
