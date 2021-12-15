@@ -9,14 +9,14 @@ import com.example.fundo.room.user.User
 @Dao
 interface UserDAO {
     @Insert
-    suspend fun insert(user: User)
+    fun insert(user: User)
 
     @Query("delete from User where uid=:uid")
-    suspend fun delete(uid:Int)
+    fun delete(uid:Int)
 
     @Update
-    suspend fun update(user: User)
+    fun update(user: User)
 
     @Query("select * from User")
-    suspend fun display():List<User>
+    fun display():List<User>
 }
