@@ -20,30 +20,29 @@ class UserService {
         return userList
     }
 
-    suspend fun getUser(): ArrayList<FirebaseUserDetails> {
-        var userList: ArrayList<FirebaseUserDetails> = arrayListOf()
-        val usersApi = retrofit.create(UsersApi::class.java)
-        val userResponse = usersApi.getUser()
-        if (userResponse.documents != null) {
-            userList = ArrayList(userResponse.documents.map {
-                FirebaseUserDetails(
-                    it.fields.name.stringValue,
-                    it.fields.email.stringValue,
-                    it.fields.mobileNo.stringValue
-                )
-            })
+    suspend fun getSingleUser(userId: String): FirebaseUserDetails {
+        val usersApi: UsersApi = retrofit.create(UsersApi::class.java)
+        val userResponse = usersApi.getSingleUser(userId)
+        val fields = userResponse.fields
 
-        }
-        return userList
+        return FirebaseUserDetails(
+            fields.name.stringValue,
+            fields.email.stringValue,
+            fields.mobileNo.stringValue
+        )
     }
 
-    suspend fun postUser(name: String,email: String,phone: String) {
-        var user = FirebaseUserDetails(name,email,phone)
-        var userList: ArrayList<FirebaseUserDetails> = arrayListOf()
-        val usersApi = retrofit.create(UsersApi::class.java)
-        val userResponse = usersApi.postUser()
-        if (userResponse.documents != null) {
-            Log.d("record added",userList.toString())
-        }
+    suspend fun addUser(user: Users): Users {
+        val retrofit = RetrofitClient.createRetrofit()
+        val usersApi: UsersApi = retrofit.create(UsersApi::class.java)
+        val userField = UserField(
+            name = StringField(user.name.toString()),
+            email = StringField(user.email.toString()),
+            phone = StringField(user.mobileNo.toString())
+        )
+        val userAddDocument = UserAddDocument(userField)
+
+        usersApi.addUser(user.fid.toString(), userAddDocument)
+        return user
     }
 }

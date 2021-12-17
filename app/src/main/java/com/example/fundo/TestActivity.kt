@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import com.example.fundo.networking.users.UserService
+import com.example.fundo.networking.users.Users
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,7 +35,7 @@ class TestActivity : AppCompatActivity() {
 
         callApiUserButton.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val users = userService.getUser()
+                val users = userService.getSingleUser("CjesRR5Ro8hh6lm1bJTT")
                 withContext(Dispatchers.Main) {
                     apiTextView.text = users.toString()
                 }
@@ -42,7 +43,7 @@ class TestActivity : AppCompatActivity() {
         }
         postUserButton.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                userService.postUser("smita","smita@gmail.com","3214567896")
+                userService.addUser(Users("12345","smita","smita@gmail.com","6789056432"))
             }
         }
     }
